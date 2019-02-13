@@ -1,0 +1,11 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: org.nuxeo.onboarding.product
+Bundle-Version: 1.0.0
+Bundle-Name: onboarding-core
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.nuxeo.onboarding.product.onboarding-core;singleton=true
+Nuxeo-Component: OSGI-INF/productservice-service.xml,
+ OSGI-INF/addvat-operation-contrib.xml,
+ OSGI-INF/vat-value-contrib.xml

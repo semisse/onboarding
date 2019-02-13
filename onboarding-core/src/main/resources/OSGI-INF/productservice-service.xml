@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.onboarding.product.ProductService" version="1.0">
+
+  <implementation class="org.nuxeo.onboarding.product.ProductServiceImpl" />
+
+  <service>
+    <provide interface="org.nuxeo.onboarding.product.ProductService" />
+  </service>
+
+  <extension-point name="countriesVat">
+    <object class="org.nuxeo.onboarding.product.VatValueDescriptor"/>
+  </extension-point>
+
+</component>
