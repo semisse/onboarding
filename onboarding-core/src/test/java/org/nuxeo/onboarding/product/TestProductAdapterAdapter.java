@@ -15,14 +15,14 @@ import org.nuxeo.onboarding.product.ProductAdapterAdapter;
 
 @RunWith(FeaturesRunner.class)
 @Features(CoreFeature.class)
-@Deploy({"org.nuxeo.onboarding.product.onboarding-core"})
+@Deploy({"org.nuxeo.onboarding.product.onboarding-core", "studio.extensions.sfialho-SANDBOX"})
 public class TestProductAdapterAdapter {
   @Inject
   CoreSession session;
 
   @Test
   public void shouldCallTheAdapter() {
-    String doctype = "ProductAdapter";
+    String doctype = "product";
     String testTitle = "My Adapter Title";
 
     DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
