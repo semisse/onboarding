@@ -1,11 +1,10 @@
 package org.nuxeo.onboarding.product;
 
-
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.runtime.model.Descriptor;
 
-@XObject("countriesVat")
+@XObject("country")
 public class VatValueDescriptor implements Descriptor {
     @XNode("@id")
     protected String countryNameId;

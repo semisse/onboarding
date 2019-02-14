@@ -14,14 +14,18 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         VatValueDescriptor descriptor = (VatValueDescriptor) contribution;
+        countriesVat.put(descriptor.getId(), descriptor);
     }
 
     @Override
     public void unregisterContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
+        VatValueDescriptor descriptor = (VatValueDescriptor) contribution;
+        countriesVat.remove(descriptor.getId());
     }
 
     @Override
     public Double computePrice(DocumentModel doc, Double countryVat) {
+
         if (countryVat == null) {
             countryVat = 1.23d;
         }

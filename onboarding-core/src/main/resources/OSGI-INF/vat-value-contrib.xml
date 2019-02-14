@@ -1,8 +1,14 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.onboarding.vat-value-contrib">
     <extension target="org.nuxeo.onboarding.product.ProductService" point="countriesVat">
-        <countryName id="PT">
+        <country id="PT">
             <vatValue>1.23</vatValue>
-        </countryName>
+        </country>
+        <country id="ES">
+            <vatValue>1.21</vatValue>
+        </country>
+        <country id="DE">
+            <vatValue>1.19</vatValue>
+        </country>
     </extension>
 </component>

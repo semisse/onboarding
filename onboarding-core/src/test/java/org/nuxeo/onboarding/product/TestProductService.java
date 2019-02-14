@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -11,6 +12,9 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
+
+import java.io.Serializable;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -23,7 +27,7 @@ public class TestProductService {
     protected ProductService productservice;
 
     @Inject
-    protected CoreSession coreSession;
+    protected CoreSession session;
 
     @Test
     public void testService() {
@@ -32,15 +36,14 @@ public class TestProductService {
 
     @Test
     public void testDocumentCreation() {
-        DocumentModel doc = coreSession.createDocumentModel("/", "ProductTest", "product");
-
-        doc = coreSession.createDocument(doc);
-        doc.setPropertyValue("dc:title", "some title");
-        doc.setPropertyValue("product_schema:price", 10d);
-        doc = coreSession.saveDocument(doc);
+        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
+        ProductAdapterAdapter product = doc.getAdapter(ProductAdapterAdapter.class);
+        product.setDummyData();
+        doc = session.createDocument(doc);
+        doc = session.saveDocument(doc);
 
         IdRef docIdRef = new IdRef(doc.getId());
-        doc = coreSession.getDocument(docIdRef);
+        doc = session.getDocument(docIdRef);
         Assert.assertNotNull(doc);
 
         String title = (String) doc.getPropertyValue("dc:title");
@@ -48,8 +51,30 @@ public class TestProductService {
 
         Double price = (Double) doc.getPropertyValue("product_schema:price");
         Assert.assertNotNull(price);
-
-        return;
-
     }
+
+    @Test
+    public void testContribution() throws OperationException {
+        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
+        ProductAdapterAdapter product = doc.getAdapter(ProductAdapterAdapter.class);
+        doc = session.createDocument(doc);
+        doc.setPropertyValue("dc:title", "some title");
+        doc.setPropertyValue("product_schema:price", 10d);
+
+        product.setDistributor("Some Store", "PT");
+
+        doc = session.saveDocument(doc);
+        IdRef docIdRef = new IdRef(doc.getId());
+        doc = session.getDocument(docIdRef);
+        assertNotNull(doc);
+
+        Map<String, Serializable> map = (Map<String, Serializable>) doc.getPropertyValue("product:Distributor");
+
+        product.getDistributorName();
+        product.getDistributorLocation();
+
+        Assert.assertEquals(product.getDistributorName(), "Some Store");
+        Assert.assertEquals(product.getDistributorLocation(), "PT");
+    }
+
 }
