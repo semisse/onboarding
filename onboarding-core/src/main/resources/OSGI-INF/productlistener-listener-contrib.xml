@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.onboarding.product.listener.productlistener">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+    <listener name="productlistener"
+      class="org.nuxeo.onboarding.product.ProductListener">
+        <event>soldoutEvent</event>
+    </listener>
+  </extension>
+
+</component>

@@ -9,4 +9,5 @@ Bundle-SymbolicName: org.nuxeo.onboarding.product.onboarding-core;singleton=true
 Nuxeo-Component: OSGI-INF/productservice-service.xml,
  OSGI-INF/addvat-operation-contrib.xml,
  OSGI-INF/vat-value-contrib.xml,
- OSGI-INF/org.nuxeo.onboarding.productproductadapter-adapter-contrib.xml
+ OSGI-INF/org.nuxeo.onboarding.productproductadapter-adapter-contrib.xml,
+ OSGI-INF/productlistener-listener-contrib.xml

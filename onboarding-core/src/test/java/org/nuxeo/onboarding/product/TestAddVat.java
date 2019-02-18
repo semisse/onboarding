@@ -37,6 +37,7 @@ public class TestAddVat {
         ProductAdapterAdapter product = doc.getAdapter(ProductAdapterAdapter.class);
         product.setDummyData();
 
+
         OperationContext ctx = new OperationContext(session);
 
         ctx.setInput(doc);
@@ -52,21 +53,20 @@ public class TestAddVat {
 
     @Test
     public void testSingleProductWithoutPrice() throws OperationException {
-        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        doc = session.createDocument(doc);
-        ProductAdapterAdapter product = doc.getAdapter(ProductAdapterAdapter.class);
-        product.setDummyData();
-        doc = session.saveDocument(doc);
+        DocumentModel product = session.createDocumentModel("/", "ProductTest", "product");
+        product = session.createDocument(product);
+        product.setPropertyValue("dc:title", "Product Test One");
+        product = session.saveDocument(product);
 
         OperationContext ctx = new OperationContext(session);
 
-        ctx.setInput(doc);
+        ctx.setInput(product);
         DocumentModel returnedProduct = (DocumentModel) automationService.run(ctx, AddVat.ID);
 
         Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
 
         Assert.assertNotNull(returnedProduct);
-        Assert.assertEquals(12.3, priceWithVat, 0.01);
+        Assert.assertEquals(1.23, priceWithVat, 0.01);
     }
 
     @Test
