@@ -35,7 +35,7 @@ import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
-import org.nuxeo.onboarding.product.adapters.ProductAdapterAdapter;
+import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -71,8 +71,9 @@ public class TestProductListener {
         //Create Product
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         doc = session.createDocument(doc);
-        ProductAdapterAdapter product = doc.getAdapter(ProductAdapterAdapter.class);
-        product.setDummyData();
+        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+        product.setDocumentTitle("Test Product");
+        product.setDocumentPrice(10d);
         doc.setPropertyValue("product_schema:available", true);
         doc = session.saveDocument(doc);
 

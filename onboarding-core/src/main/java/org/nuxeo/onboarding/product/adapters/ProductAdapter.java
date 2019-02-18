@@ -27,16 +27,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
-public class ProductAdapterAdapter {
+public class ProductAdapter {
     protected DocumentModel doc;
 
     protected String titleXpath = "dc:title";
     protected String descriptionXpath = "dc:description";
 
-    public ProductAdapterAdapter(DocumentModel doc) {
+    public ProductAdapter(DocumentModel doc) {
         this.doc = doc;
     }
 
@@ -69,6 +66,14 @@ public class ProductAdapterAdapter {
         return doc.getTitle();
     }
 
+    public String getDistributorName() {
+        return (String) doc.getPropertyValue("product:Distributor/Name");
+    }
+
+    public String getDistributorLocation() {
+        return (String) doc.getPropertyValue("product:Distributor/Location");
+    }
+
     public void setTitle(String value) {
         doc.setPropertyValue(titleXpath, value);
     }
@@ -81,9 +86,12 @@ public class ProductAdapterAdapter {
         doc.setPropertyValue(descriptionXpath, value);
     }
 
-    public void setDummyData() {
-        doc.setPropertyValue("dc:title", "some title");
-        doc.setPropertyValue("product_schema:price", 10d);
+    public void setDocumentTitle(String title) {
+        doc.setPropertyValue("dc:title", title);
+    }
+
+    public void setDocumentPrice(Double price) {
+        doc.setPropertyValue("product_schema:price", price);
     }
 
     public void setDistributor(String name, String location) {
@@ -92,15 +100,5 @@ public class ProductAdapterAdapter {
         distributor.put("Location", location);
         doc.setPropertyValue("product:Distributor", (Serializable) distributor);
     }
-
-
-    public String getDistributorName() {
-        return (String) doc.getPropertyValue("product:Distributor/Name");
-    }
-
-    public String getDistributorLocation() {
-        return (String) doc.getPropertyValue("product:Distributor/Location");
-    }
-
 
 }

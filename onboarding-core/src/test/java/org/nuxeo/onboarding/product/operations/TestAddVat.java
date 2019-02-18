@@ -34,7 +34,7 @@ import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
-import org.nuxeo.onboarding.product.adapters.ProductAdapterAdapter;
+import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -54,12 +54,12 @@ public class TestAddVat {
     protected AutomationService automationService;
 
     @Test
-    public void testSingleProduct() throws OperationException {
+    public void shouldVATbeUpdatedinOneProduct() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         doc = session.createDocument(doc);
-        ProductAdapterAdapter product = doc.getAdapter(ProductAdapterAdapter.class);
-        product.setDummyData();
-
+        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+        product.setDocumentTitle("Test Product");
+        product.setDocumentPrice(10d);
 
         OperationContext ctx = new OperationContext(session);
 
@@ -75,33 +75,36 @@ public class TestAddVat {
     }
 
     @Test
-    public void testSingleProductWithoutPrice() throws OperationException {
-        DocumentModel product = session.createDocumentModel("/", "ProductTest", "product");
-        product = session.createDocument(product);
-        product.setPropertyValue("dc:title", "Product Test One");
-        product = session.saveDocument(product);
+    public void shouldProductWithoutVATbeUpdatedWithDefaultValue() throws OperationException {
+        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
+        doc = session.createDocument(doc);
+        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+        product.setDocumentTitle("Test Product");
+        product.setDocumentPrice(10d);
+        doc = session.saveDocument(doc);
 
         OperationContext ctx = new OperationContext(session);
 
-        ctx.setInput(product);
+        ctx.setInput(doc);
         DocumentModel returnedProduct = (DocumentModel) automationService.run(ctx, AddVat.ID);
 
         Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
 
         Assert.assertNotNull(returnedProduct);
-        Assert.assertEquals(1.23, priceWithVat, 0.01);
+        Assert.assertEquals(12.3, priceWithVat, 0.01);
     }
 
     @Test
-    public void testAddVat() throws OperationException {
+    public void shouldVATbeUpdatedInSeveralProducts() throws OperationException {
         DocumentModelList listWithProducts = new DocumentModelListImpl();
         for (int i = 1; i < 6; i++) {
-            DocumentModel product = session.createDocumentModel("/", "ProductTest" + i, "product");
-            product = session.createDocument(product);
-            product.setPropertyValue("dc:title", "Product Test One");
-            product.setPropertyValue("product_schema:price", 10d + i);
-            product = session.saveDocument(product);
-            listWithProducts.add(product);
+            DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
+            doc = session.createDocument(doc);
+            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+            product.setDocumentTitle("Test Product");
+            product.setDocumentPrice(10d + i);
+            doc = session.saveDocument(doc);
+            listWithProducts.add(doc);
         }
 
         OperationContext ctx = new OperationContext(session);
@@ -129,12 +132,13 @@ public class TestAddVat {
     public void testUpdateProducts() throws OperationException {
         DocumentModelList listWithProducts = new DocumentModelListImpl();
         for (int i = 1; i < 6; i++) {
-            DocumentModel product = session.createDocumentModel("/", "ProductTest" + i, "product");
-            product = session.createDocument(product);
-            product.setPropertyValue("dc:title", "Product Test One");
-            product.setPropertyValue("product_schema:price", 10d + i);
-            product = session.saveDocument(product);
-            listWithProducts.add(product);
+            DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
+            doc = session.createDocument(doc);
+            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+            product.setDocumentTitle("Test Product");
+            product.setDocumentPrice(10d + i);
+            doc = session.saveDocument(doc);
+            listWithProducts.add(doc);
         }
 
         OperationContext ctx = new OperationContext(session);

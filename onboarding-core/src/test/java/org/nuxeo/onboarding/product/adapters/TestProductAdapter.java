@@ -34,7 +34,7 @@ import javax.inject.Inject;
 @RunWith(FeaturesRunner.class)
 @Features(CoreFeature.class)
 @Deploy({"org.nuxeo.onboarding.product.onboarding-core", "studio.extensions.sfialho-SANDBOX"})
-public class TestProductAdapterAdapter {
+public class TestProductAdapter {
     @Inject
     CoreSession session;
 
@@ -44,7 +44,7 @@ public class TestProductAdapterAdapter {
         String testTitle = "My Adapter Title";
 
         DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
-        ProductAdapterAdapter adapter = doc.getAdapter(ProductAdapterAdapter.class);
+        ProductAdapter adapter = doc.getAdapter(ProductAdapter.class);
         adapter.setTitle(testTitle);
         Assert.assertEquals("Document title does not match when using the adapter", testTitle, adapter.getTitle());
     }

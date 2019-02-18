@@ -49,7 +49,6 @@ public class ProductListener implements EventListener {
         DocumentEventContext docCtx = (DocumentEventContext) ctx;
         DocumentModel doc = docCtx.getSourceDocument();
 
-        // Add some logic starting from here.
 
         if (doc == null) {
             return;
