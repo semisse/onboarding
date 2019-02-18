@@ -45,7 +45,7 @@ import javax.inject.Inject;
 @Features(AutomationFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 @Deploy({"org.nuxeo.onboarding.product.onboarding-core", "studio.extensions.sfialho-SANDBOX"})
-public class TestAddVat {
+public class TestCalculateVAT {
 
     @Inject
     protected CoreSession session;
@@ -64,7 +64,7 @@ public class TestAddVat {
         OperationContext ctx = new OperationContext(session);
 
         ctx.setInput(doc);
-        automationService.run(ctx, AddVat.ID);
+        automationService.run(ctx, CalculateVAT.ID);
 
         DocumentModel returnedProduct = session.getDocument(new PathRef("/ProductTest"));
 
@@ -86,7 +86,7 @@ public class TestAddVat {
         OperationContext ctx = new OperationContext(session);
 
         ctx.setInput(doc);
-        DocumentModel returnedProduct = (DocumentModel) automationService.run(ctx, AddVat.ID);
+        DocumentModel returnedProduct = (DocumentModel) automationService.run(ctx, CalculateVAT.ID);
 
         Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
 
@@ -110,7 +110,7 @@ public class TestAddVat {
         OperationContext ctx = new OperationContext(session);
 
         ctx.setInput(listWithProducts);
-        DocumentModelList returnedProductList = (DocumentModelList) automationService.run(ctx, AddVat.ID);
+        DocumentModelList returnedProductList = (DocumentModelList) automationService.run(ctx, CalculateVAT.ID);
 
         Assert.assertNotNull(returnedProductList);
         Assert.assertEquals(listWithProducts.size(), returnedProductList.size());
@@ -144,7 +144,7 @@ public class TestAddVat {
         OperationContext ctx = new OperationContext(session);
 
         ctx.setInput(listWithProducts);
-        DocumentModelList returnedProductList = (DocumentModelList) automationService.run(ctx, AddVat.ID);
+        DocumentModelList returnedProductList = (DocumentModelList) automationService.run(ctx, CalculateVAT.ID);
 
         Assert.assertNotNull(returnedProductList);
         Assert.assertEquals(listWithProducts.size(), returnedProductList.size());

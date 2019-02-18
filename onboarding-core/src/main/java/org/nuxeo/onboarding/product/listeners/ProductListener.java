@@ -78,7 +78,5 @@ public class ProductListener implements EventListener {
             DocumentRef folderRef = folder.getRef();
             ctx.getCoreSession().move(visualsInProduct, folderRef);
         }
-
-
     }
 }

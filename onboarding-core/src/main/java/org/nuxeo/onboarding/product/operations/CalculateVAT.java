@@ -28,9 +28,9 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.onboarding.product.services.ProductService;
 
-@Operation(id = AddVat.ID, category = Constants.CAT_DOCUMENT, label = "add vat to price product", description = "Describe here what your operation does.")
-public class AddVat {
-    public static final String ID = "Document.AddVat";
+@Operation(id = CalculateVAT.ID, category = Constants.CAT_DOCUMENT, label = "add vat to price product", description = "Describe here what your operation does.")
+public class CalculateVAT {
+    public static final String ID = "Document.CalculateVAT";
 
     @Context
     protected ProductService productService;

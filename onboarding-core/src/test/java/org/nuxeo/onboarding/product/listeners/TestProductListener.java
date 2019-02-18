@@ -107,6 +107,6 @@ public class TestProductListener {
 
         //Check if title was changed
         DocumentModel retrieveDoc = session.getDocument(doc.getRef());
-        Assert.assertEquals(retrieveDoc.getPropertyValue("dc:title"), "some title - Sold Out!");
+        Assert.assertEquals(retrieveDoc.getPropertyValue("dc:title"), "Test Product - Sold Out!");
     }
 }

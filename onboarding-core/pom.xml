@@ -60,5 +60,9 @@
             <artifactId>nuxeo-core-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.nuxeo.ecm.platform</groupId>
+            <artifactId>nuxeo-platform-filemanager-core</artifactId>
+        </dependency>
     </dependencies>
 </project>
