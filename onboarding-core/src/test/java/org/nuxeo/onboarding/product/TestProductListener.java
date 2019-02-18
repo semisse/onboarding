@@ -4,9 +4,7 @@ import com.google.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.collections.api.CollectionManager;
-import org.nuxeo.ecm.collections.core.test.CollectionFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.PathRef;
@@ -18,7 +16,6 @@ import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
@@ -28,8 +25,7 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
-@Features({ AutomationFeature.class, CollectionFeature.class })
-@Deploy({"org.nuxeo.onboarding.product.onboarding-core", "studio.extensions.sfialho-SANDBOX"})
+@Features({ OnboardingTestFeature.class })
 public class TestProductListener {
 
     protected final List<String> events = Arrays.asList("documentModified");
