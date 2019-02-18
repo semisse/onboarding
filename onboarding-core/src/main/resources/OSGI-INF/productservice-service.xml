@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
-<component name="org.nuxeo.onboarding.product.ProductService" version="1.0">
+<component name="org.nuxeo.onboarding.product.services.ProductService" version="1.0">
 
-  <implementation class="org.nuxeo.onboarding.product.ProductServiceImpl" />
+    <implementation class="org.nuxeo.onboarding.product.services.ProductServiceImpl"/>
 
-  <service>
-    <provide interface="org.nuxeo.onboarding.product.ProductService" />
-  </service>
+    <service>
+        <provide interface="org.nuxeo.onboarding.product.services.ProductService"/>
+    </service>
 
-  <extension-point name="countriesVat">
-    <object class="org.nuxeo.onboarding.product.VatValueDescriptor"/>
-  </extension-point>
+    <extension-point name="countriesVat">
+        <object class="org.nuxeo.onboarding.product.descriptors.VatValueDescriptor"/>
+    </extension-point>
 
 </component>

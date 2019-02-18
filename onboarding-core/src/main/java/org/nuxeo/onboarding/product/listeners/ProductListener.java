@@ -1,4 +1,4 @@
-package org.nuxeo.onboarding.product;
+package org.nuxeo.onboarding.product.listeners;
 
 
 import org.nuxeo.ecm.collections.core.adapter.Collection;

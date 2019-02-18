@@ -1,6 +1,4 @@
-package org.nuxeo.onboarding.product;
-
-import javax.inject.Inject;
+package org.nuxeo.onboarding.product.operations;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,14 +7,20 @@ import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
+import org.nuxeo.onboarding.product.adapters.ProductAdapterAdapter;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
+
+import javax.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
 @Features(AutomationFeature.class)
@@ -72,7 +76,7 @@ public class TestAddVat {
     @Test
     public void testAddVat() throws OperationException {
         DocumentModelList listWithProducts = new DocumentModelListImpl();
-        for (int i=1; i < 6; i++) {
+        for (int i = 1; i < 6; i++) {
             DocumentModel product = session.createDocumentModel("/", "ProductTest" + i, "product");
             product = session.createDocument(product);
             product.setPropertyValue("dc:title", "Product Test One");
@@ -105,7 +109,7 @@ public class TestAddVat {
     @Test
     public void testUpdateProducts() throws OperationException {
         DocumentModelList listWithProducts = new DocumentModelListImpl();
-        for (int i=1; i < 6; i++) {
+        for (int i = 1; i < 6; i++) {
             DocumentModel product = session.createDocumentModel("/", "ProductTest" + i, "product");
             product = session.createDocument(product);
             product.setPropertyValue("dc:title", "Product Test One");

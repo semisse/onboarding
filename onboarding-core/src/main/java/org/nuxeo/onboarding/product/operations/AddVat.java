@@ -1,15 +1,18 @@
-package org.nuxeo.onboarding.product;
+package org.nuxeo.onboarding.product.operations;
 
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.onboarding.product.services.ProductService;
 
 /**
  *
  */
-@Operation(id=AddVat.ID, category=Constants.CAT_DOCUMENT, label="add vat to price product", description="Describe here what your operation does.")
+@Operation(id = AddVat.ID, category = Constants.CAT_DOCUMENT, label = "add vat to price product", description = "Describe here what your operation does.")
 public class AddVat {
     public static final String ID = "Document.AddVat";
 
@@ -34,7 +37,7 @@ public class AddVat {
 
     private DocumentModel getProductAndSetNewPrice(DocumentModel product) {
         Double price = (Double) product.getPropertyValue("product_schema:price");
-        if(price == null) {
+        if (price == null) {
             product.setPropertyValue("product_schema:price", 1);
         }
         Double newPrice = productService.computePrice(product, null);

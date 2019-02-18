@@ -1,4 +1,4 @@
-package org.nuxeo.onboarding.product;
+package org.nuxeo.onboarding.product.descriptors;
 
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
@@ -27,7 +27,7 @@ public class VatValueDescriptor implements Descriptor {
     @Override
     public Descriptor merge(Descriptor other) {
         VatValueDescriptor otherVat = (VatValueDescriptor) other;
-        if(otherVat.getVatValue() > vatValue) {
+        if (otherVat.getVatValue() > vatValue) {
             vatValue = otherVat.getVatValue();
         }
         return this;

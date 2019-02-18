@@ -1,4 +1,4 @@
-package org.nuxeo.onboarding.product;
+package org.nuxeo.onboarding.product.listeners;
 
 import com.google.inject.Inject;
 import org.junit.Assert;
@@ -15,6 +15,8 @@ import org.nuxeo.ecm.core.event.EventProducer;
 import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
+import org.nuxeo.onboarding.product.OnboardingTestFeature;
+import org.nuxeo.onboarding.product.adapters.ProductAdapterAdapter;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -25,7 +27,7 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
-@Features({ OnboardingTestFeature.class })
+@Features({OnboardingTestFeature.class})
 public class TestProductListener {
 
     protected final List<String> events = Arrays.asList("documentModified");

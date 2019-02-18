@@ -1,6 +1,7 @@
-package org.nuxeo.onboarding.product;
+package org.nuxeo.onboarding.product.services;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.onboarding.product.descriptors.VatValueDescriptor;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 
