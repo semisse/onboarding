@@ -32,12 +32,12 @@ import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductListener implements EventListener {
-
 
     @Override
     public void handleEvent(Event event) {
@@ -57,7 +57,8 @@ public class ProductListener implements EventListener {
 
         Boolean available = (Boolean) doc.getPropertyValue("product_schema:available");
         if ("product".equals(type) && !available) {
-            doc.setPropertyValue("dc:title", doc.getPropertyValue("dc:title") + " - Sold Out!");
+            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+            product.setDocumentTitle(product.getTitle() + " - Sold Out!");
             ctx.getCoreSession().saveDocument(doc);
 
             CoreSession session = doc.getCoreSession();

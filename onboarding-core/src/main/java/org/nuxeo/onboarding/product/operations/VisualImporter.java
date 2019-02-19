@@ -24,6 +24,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.filemanager.service.extension.AbstractFileImporter;
 import org.nuxeo.ecm.platform.types.TypeManager;
+import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 
 import java.io.Serializable;
 
@@ -32,10 +33,15 @@ public class VisualImporter extends AbstractFileImporter {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public DocumentModel create(CoreSession session, Blob content, String path, boolean overwrite, String fullname,
+    public DocumentModel create(CoreSession session,
+                                Blob content,
+                                String path,
+                                boolean overwrite,
+                                String fullname,
                                 TypeManager typeService) {
         DocumentModel doc = session.createDocumentModel(path, content.getFilename(), "visual");
-        doc.setPropertyValue("dc:title", content.getFilename());
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        productAdapter.setDocumentTitle(content.getFilename());
         doc.setPropertyValue("file:content", (Serializable) content);
         doc = session.createDocument(doc);
         return doc;

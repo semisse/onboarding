@@ -20,6 +20,7 @@
 package org.nuxeo.onboarding.product.services;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 import org.nuxeo.onboarding.product.descriptors.VatValueDescriptor;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
@@ -49,8 +50,8 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
         if (countryVat == null) {
             countryVat = 1.23d;
         }
-
-        Double price = (Double) doc.getPropertyValue("product_schema:price");
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        Double price = productAdapter.getPrice();
         return price * countryVat;
     }
 

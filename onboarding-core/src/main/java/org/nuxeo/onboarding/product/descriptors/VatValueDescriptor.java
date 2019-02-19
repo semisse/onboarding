@@ -51,5 +51,4 @@ public class VatValueDescriptor implements Descriptor {
         }
         return this;
     }
-
 }

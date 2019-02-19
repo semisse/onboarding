@@ -26,6 +26,7 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 import org.nuxeo.onboarding.product.services.ProductService;
 
 @Operation(id = CalculateVAT.ID, category = Constants.CAT_DOCUMENT, label = "add vat to price product", description = "Describe here what your operation does.")
@@ -52,12 +53,14 @@ public class CalculateVAT {
     }
 
     private DocumentModel getProductAndSetNewPrice(DocumentModel product) {
-        Double price = (Double) product.getPropertyValue("product_schema:price");
+        ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
+        Double price = productAdapter.getPrice();
         if (price == null) {
-            product.setPropertyValue("product_schema:price", 1);
+
+            productAdapter.setDocumentPrice(1d);
         }
         Double newPrice = productService.computePrice(product, null);
-        product.setPropertyValue("product_schema:price", newPrice);
+        productAdapter.setDocumentPrice(newPrice);
         return session.saveDocument(product);
     }
 }

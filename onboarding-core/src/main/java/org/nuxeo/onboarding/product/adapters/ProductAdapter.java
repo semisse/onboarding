@@ -74,19 +74,19 @@ public class ProductAdapter {
         return (String) doc.getPropertyValue("product:Distributor/Location");
     }
 
-    public void setTitle(String value) {
-        doc.setPropertyValue(titleXpath, value);
-    }
-
     public String getDescription() {
         return (String) doc.getPropertyValue(descriptionXpath);
+    }
+
+    public Double getPrice() { return (Double) doc.getPropertyValue("product_schema:price"); }
+
+    public void setTitle(String value) {
+        doc.setPropertyValue(titleXpath, value);
     }
 
     public void setDescription(String value) {
         doc.setPropertyValue(descriptionXpath, value);
     }
-
-    //getprice
 
     public void setDocumentTitle(String title) {
         doc.setPropertyValue("dc:title", title);
