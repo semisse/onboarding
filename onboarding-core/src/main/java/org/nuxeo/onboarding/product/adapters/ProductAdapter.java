@@ -80,10 +80,6 @@ public class ProductAdapter {
 
     public Double getPrice() { return (Double) doc.getPropertyValue("product_schema:price"); }
 
-    public void setTitle(String value) {
-        doc.setPropertyValue(titleXpath, value);
-    }
-
     public void setDescription(String value) {
         doc.setPropertyValue(descriptionXpath, value);
     }

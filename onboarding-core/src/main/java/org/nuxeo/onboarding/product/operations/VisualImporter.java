@@ -24,7 +24,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.filemanager.service.extension.AbstractFileImporter;
 import org.nuxeo.ecm.platform.types.TypeManager;
-import org.nuxeo.onboarding.product.adapters.ProductAdapter;
+import org.nuxeo.onboarding.product.adapters.VisualAdapter;
 
 import java.io.Serializable;
 
@@ -40,9 +40,9 @@ public class VisualImporter extends AbstractFileImporter {
                                 String fullname,
                                 TypeManager typeService) {
         DocumentModel doc = session.createDocumentModel(path, content.getFilename(), "visual");
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setDocumentTitle(content.getFilename());
-        doc.setPropertyValue("file:content", (Serializable) content);
+        VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
+        visualAdapter.setTitle(content.getFilename());
+        visualAdapter.setFileContent((Serializable) content);
         doc = session.createDocument(doc);
         return doc;
     }

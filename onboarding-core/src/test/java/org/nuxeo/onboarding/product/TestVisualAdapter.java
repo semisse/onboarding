@@ -17,33 +17,32 @@
  *     Samuel Fialho
  */
 
-package org.nuxeo.onboarding.product.adapters;
+package org.nuxeo.onboarding.product;
+
+import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.onboarding.product.OnboardingTestFeature;
+import org.nuxeo.ecm.core.test.CoreFeature;
+import org.nuxeo.onboarding.product.adapters.VisualAdapter;
+import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
-import javax.inject.Inject;
-
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
-public class TestProductAdapter {
-    @Inject
-    protected CoreSession session;
+public class TestVisualAdapter {
+  @Inject
+  CoreSession session;
 
-    @Test
-    public void shouldCallTheAdapter() {
-        String doctype = "product";
-        String testTitle = "My Adapter Title";
-
-        DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setDocumentTitle(testTitle);
-        Assert.assertEquals("Document title does not match when using the adapter", testTitle, productAdapter.getTitle());
-    }
+  @Test
+  public void shouldCallTheAdapter() {
+    DocumentModel doc = session.createDocumentModel("/", "test-adapter", "visual");
+    VisualAdapter adapter = doc.getAdapter(VisualAdapter.class);
+    adapter.setTitle("My Adapter Title");
+    Assert.assertEquals("Document title does not match when using the adapter", "My Adapter Title", adapter.getTitle());
+  }
 }

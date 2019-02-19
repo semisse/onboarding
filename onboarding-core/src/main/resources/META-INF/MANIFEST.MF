@@ -11,4 +11,5 @@ Nuxeo-Component: OSGI-INF/productservice-service.xml,
  OSGI-INF/vat-value-contrib.xml,
  OSGI-INF/org.nuxeo.onboarding.productproductadapter-adapter-contrib.xml,
  OSGI-INF/productlistener-listener-contrib.xml,
- OSGI-INF/visualimporter-operation-contrib.xml
+ OSGI-INF/visualimporter-operation-contrib.xml,
+ OSGI-INF/org.nuxeo.onboarding.product-visual-adapter-contrib.xml
