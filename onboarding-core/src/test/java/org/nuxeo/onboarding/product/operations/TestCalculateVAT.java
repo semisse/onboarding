@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
-import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -34,17 +33,16 @@ import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
+import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
-import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
-@Features(AutomationFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
-@Deploy({"org.nuxeo.onboarding.product.onboarding-core", "studio.extensions.sfialho-SANDBOX"})
+@Features({OnboardingTestFeature.class})
 public class TestCalculateVAT {
 
     @Inject
@@ -78,9 +76,9 @@ public class TestCalculateVAT {
     public void shouldProductWithoutVATbeUpdatedWithDefaultValue() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         doc = session.createDocument(doc);
-        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-        product.setDocumentTitle("Test Product");
-        product.setDocumentPrice(10d);
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        productAdapter.setDocumentTitle("Test Product");
+        productAdapter.setDocumentPrice(10d);
         doc = session.saveDocument(doc);
 
         OperationContext ctx = new OperationContext(session);
@@ -100,9 +98,9 @@ public class TestCalculateVAT {
         for (int i = 1; i < 6; i++) {
             DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
             doc = session.createDocument(doc);
-            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-            product.setDocumentTitle("Test Product");
-            product.setDocumentPrice(10d + i);
+            ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+            productAdapter.setDocumentTitle("Test Product");
+            productAdapter.setDocumentPrice(10d + i);
             doc = session.saveDocument(doc);
             listWithProducts.add(doc);
         }
@@ -134,9 +132,9 @@ public class TestCalculateVAT {
         for (int i = 1; i < 6; i++) {
             DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
             doc = session.createDocument(doc);
-            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-            product.setDocumentTitle("Test Product");
-            product.setDocumentPrice(10d + i);
+            ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+            productAdapter.setDocumentTitle("Test Product");
+            productAdapter.setDocumentPrice(10d + i);
             doc = session.saveDocument(doc);
             listWithProducts.add(doc);
         }

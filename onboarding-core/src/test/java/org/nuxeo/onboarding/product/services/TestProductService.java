@@ -24,20 +24,18 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.OperationException;
-import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
-import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class})
-@Deploy({"org.nuxeo.onboarding.product.onboarding-core", "studio.extensions.sfialho-SANDBOX"})
+@Features({OnboardingTestFeature.class})
 public class TestProductService {
 
     @Inject
@@ -54,9 +52,9 @@ public class TestProductService {
     @Test
     public void testDocumentCreation() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-        product.setDocumentTitle("Test Product");
-        product.setDocumentPrice(10d);
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        productAdapter.setDocumentTitle("Test Product");
+        productAdapter.setDocumentPrice(10d);
         doc = session.createDocument(doc);
         doc = session.saveDocument(doc);
 
@@ -74,23 +72,23 @@ public class TestProductService {
     @Test
     public void testContribution() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         doc = session.createDocument(doc);
-        product.setDocumentTitle("Test Product");
-        product.setDocumentPrice(10d);
+        productAdapter.setDocumentTitle("Test Product");
+        productAdapter.setDocumentPrice(10d);
 
-        product.setDistributor("Some Store", "PT");
+        productAdapter.setDistributor("Some Store", "PT");
 
         doc = session.saveDocument(doc);
         IdRef docIdRef = new IdRef(doc.getId());
         doc = session.getDocument(docIdRef);
         assertNotNull(doc);
 
-        product.getDistributorName();
-        product.getDistributorLocation();
+        productAdapter.getDistributorName();
+        productAdapter.getDistributorLocation();
 
-        Assert.assertEquals(product.getDistributorName(), "Some Store");
-        Assert.assertEquals(product.getDistributorLocation(), "PT");
+        Assert.assertEquals(productAdapter.getDistributorName(), "Some Store");
+        Assert.assertEquals(productAdapter.getDistributorLocation(), "PT");
     }
 
 }

@@ -57,8 +57,8 @@ public class ProductListener implements EventListener {
 
         Boolean available = (Boolean) doc.getPropertyValue("product_schema:available");
         if ("product".equals(type) && !available) {
-            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-            product.setDocumentTitle(product.getTitle() + " - Sold Out!");
+            ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+            productAdapter.setDocumentTitle(productAdapter.getTitle() + " - Sold Out!");
             ctx.getCoreSession().saveDocument(doc);
 
             CoreSession session = doc.getCoreSession();
