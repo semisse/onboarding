@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.onboarding.product.operations.visualimporter" version="1.0">
-
     <extension target="org.nuxeo.ecm.platform.filemanager.service.FileManagerService" point="plugins">
-        <plugin name="VisualImporter" class="org.nuxeo.onboarding.VisualImporter" order="1">
+        <plugin name="VisualImporter" class="org.nuxeo.onboarding.product.operations.VisualImporter" order="1">
             <filter>.png</filter>
             <filter>.jpg</filter>
             <filter>.jpeg</filter>
