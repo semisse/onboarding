@@ -28,3 +28,4 @@ bin/
 *~bak
 *-bak
 *.bak
+onboarding-core/nashorn_code_cache/
