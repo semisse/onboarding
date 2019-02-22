@@ -19,13 +19,13 @@
 
 package org.nuxeo.onboarding.product.operations;
 
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.platform.filemanager.api.FileImporterContext;
-import org.nuxeo.ecm.platform.filemanager.service.extension.AbstractFileImporter;
-import org.nuxeo.onboarding.product.adapters.VisualAdapter;
+        import org.nuxeo.ecm.core.api.CoreSession;
+        import org.nuxeo.ecm.core.api.DocumentModel;
+        import org.nuxeo.ecm.platform.filemanager.api.FileImporterContext;
+        import org.nuxeo.ecm.platform.filemanager.service.extension.AbstractFileImporter;
+        import org.nuxeo.onboarding.product.adapters.VisualAdapter;
 
-import java.io.Serializable;
+        import java.io.Serializable;
 
 public class VisualImporter extends AbstractFileImporter {
 
