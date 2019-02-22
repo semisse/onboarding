@@ -56,7 +56,6 @@ public class CalculateVAT {
         ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
         Double price = productAdapter.getPrice();
         if (price == null) {
-
             productAdapter.setDocumentPrice(1d);
         }
         Double newPrice = productService.computePrice(product, null);

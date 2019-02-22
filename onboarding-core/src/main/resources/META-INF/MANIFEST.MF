@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Name: onboarding-core
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.onboarding.product.onboarding-core;singleton=true
+Nuxeo-WebModule: org.nuxeo.ecm.webengine.jaxrs.scan.DynamicApplicationFactory;package=org/nuxeo/onboarding/product/rest
 Nuxeo-Component: OSGI-INF/productservice-service.xml,
  OSGI-INF/calculatevat-operation-contrib.xml,
  OSGI-INF/vat-value-contrib.xml,
