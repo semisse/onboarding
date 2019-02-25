@@ -50,7 +50,7 @@ public class TestProductService {
     }
 
     @Test
-    public void testDocumentCreation() {
+    public void testDocumentCreation() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setDocumentTitle("Test Product");
@@ -68,6 +68,7 @@ public class TestProductService {
         Double price = (Double) doc.getPropertyValue("product_schema:price");
         Assert.assertNotNull(price);
     }
+
 
     @Test
     public void testContribution() throws OperationException {

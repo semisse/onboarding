@@ -29,9 +29,9 @@ import java.util.Map;
 
 public class ProductAdapter {
     protected DocumentModel doc;
-
     protected String titleXpath = "dc:title";
     protected String descriptionXpath = "dc:description";
+    protected String productPrice = "product_schema:price";
 
     public ProductAdapter(DocumentModel doc) {
         this.doc = doc;
@@ -78,18 +78,20 @@ public class ProductAdapter {
         return (String) doc.getPropertyValue(descriptionXpath);
     }
 
-    public Double getPrice() { return (Double) doc.getPropertyValue("product_schema:price"); }
-
     public void setDescription(String value) {
         doc.setPropertyValue(descriptionXpath, value);
     }
 
+    public Double getPrice() {
+        return (Double) doc.getPropertyValue(productPrice);
+    }
+
     public void setDocumentTitle(String title) {
-        doc.setPropertyValue("dc:title", title);
+        doc.setPropertyValue(titleXpath, title);
     }
 
     public void setDocumentPrice(Double price) {
-        doc.setPropertyValue("product_schema:price", price);
+        doc.setPropertyValue(productPrice, price);
     }
 
     public void setDistributor(String name, String location) {

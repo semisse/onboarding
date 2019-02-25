@@ -25,10 +25,7 @@ import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.PathRef;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
@@ -71,6 +68,16 @@ public class TestCalculateVAT {
         Assert.assertNotNull(returnedProduct);
         Assert.assertEquals(12.3, priceWithVat, 0.01);
     }
+
+    @Test(expected = NuxeoException.class)
+    public void shouldDocumentTypeNotBeProductThrowException() throws OperationException {
+        DocumentModel doc = session.createDocumentModel("/", "VisualTest", "visual");
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        OperationContext ctx = new OperationContext(session);
+        ctx.setInput(doc);
+        automationService.run(ctx, CalculateVAT.ID);
+    }
+
 
     @Test
     public void shouldProductWithoutVATbeUpdatedWithDefaultValue() throws OperationException {

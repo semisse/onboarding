@@ -20,6 +20,7 @@
 package org.nuxeo.onboarding.product.services;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 import org.nuxeo.onboarding.product.descriptors.VatValueDescriptor;
 import org.nuxeo.runtime.model.ComponentInstance;
@@ -31,6 +32,8 @@ import java.util.Map;
 public class ProductServiceImpl extends DefaultComponent implements ProductService {
 
     protected Map<String, VatValueDescriptor> countriesVat = new HashMap<>();
+    static final String DOCUMENT_TYPE_ERROR = "The document provided is not of the type product";
+
 
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
@@ -45,14 +48,17 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
     }
 
     @Override
-    public Double computePrice(DocumentModel doc, Double countryVat) {
-
-        if (countryVat == null) {
-            countryVat = 1.23d;
+    public Double computePrice(DocumentModel doc, Double countryVat) throws NuxeoException {
+        if (doc.getType().equals("product")) {
+            if (countryVat == null) {
+                countryVat = 1.23d;
+            }
+            ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+            Double price = productAdapter.getPrice();
+            return price * countryVat;
+        } else {
+            throw new NuxeoException(DOCUMENT_TYPE_ERROR);
         }
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        Double price = productAdapter.getPrice();
-        return price * countryVat;
     }
 
 }

@@ -26,12 +26,14 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
 import org.nuxeo.onboarding.product.services.ProductService;
 
 @Operation(id = CalculateVAT.ID, category = Constants.CAT_DOCUMENT, label = "add vat to price product", description = "Describe here what your operation does.")
 public class CalculateVAT {
     public static final String ID = "Document.CalculateVAT";
+    static final String DOCUMENT_TYPE_ERROR = "The document provided is not of the type product";
 
     @Context
     protected ProductService productService;
@@ -52,14 +54,18 @@ public class CalculateVAT {
         return products;
     }
 
-    private DocumentModel getProductAndSetNewPrice(DocumentModel product) {
-        ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
-        Double price = productAdapter.getPrice();
-        if (price == null) {
-            productAdapter.setDocumentPrice(1d);
+    private DocumentModel getProductAndSetNewPrice(DocumentModel product) throws NuxeoException {
+        if (product.getType().equals("product")) {
+            ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
+            Double price = productAdapter.getPrice();
+            if (price == null) {
+                productAdapter.setDocumentPrice(1d);
+            }
+            Double newPrice = productService.computePrice(product, null);
+            productAdapter.setDocumentPrice(newPrice);
+            return session.saveDocument(product);
+        } else {
+            throw new NuxeoException(DOCUMENT_TYPE_ERROR);
         }
-        Double newPrice = productService.computePrice(product, null);
-        productAdapter.setDocumentPrice(newPrice);
-        return session.saveDocument(product);
     }
 }
