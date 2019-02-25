@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.onboarding.product.adapters.visualadapter">
 
-  <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService" point="adapters">
-    <adapter class="org.nuxeo.onboarding.product.adapters.VisualAdapter" factory="org.nuxeo.onboarding.product.adapters.VisualAdapterFactory"/>
-  </extension>
+    <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService" point="adapters">
+        <adapter class="org.nuxeo.onboarding.product.adapters.VisualAdapter"
+                 factory="org.nuxeo.onboarding.product.adapters.ProductAdapterFactory"/>
+    </extension>
 
 </component>

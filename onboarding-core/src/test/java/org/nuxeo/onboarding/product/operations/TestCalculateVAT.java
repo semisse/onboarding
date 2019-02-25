@@ -72,7 +72,6 @@ public class TestCalculateVAT {
     @Test(expected = NuxeoException.class)
     public void shouldDocumentTypeNotBeProductThrowException() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "VisualTest", "visual");
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         OperationContext ctx = new OperationContext(session);
         ctx.setInput(doc);
         automationService.run(ctx, CalculateVAT.ID);

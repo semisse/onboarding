@@ -28,8 +28,8 @@ public class ProductAdapterFactory implements DocumentAdapterFactory {
     public Object getAdapter(DocumentModel doc, Class<?> itf) {
         if ("product".equals(doc.getType()) && doc.hasSchema("dublincore")) {
             return new ProductAdapter(doc);
-        } else {
-            return null;
-        }
+        } else if ("visual".equals(doc.getType()) && doc.hasSchema("dublincore")) {
+            return new VisualAdapter(doc);
+        } else return null;
     }
 }

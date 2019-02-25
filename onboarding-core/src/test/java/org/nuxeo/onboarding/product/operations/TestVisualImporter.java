@@ -26,6 +26,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
+import org.nuxeo.onboarding.product.adapters.VisualAdapter;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
@@ -41,8 +42,8 @@ public class TestVisualImporter {
     public void shouldImportVisual() {
         DocumentModel doc = session.createDocumentModel("/", "VisualTest", "visual");
         doc = session.createDocument(doc);
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
         System.out.println(doc.getName());
-        //productAdapter.setDocumentTitle(doc.getName());
+        visualAdapter.setTitle(doc.getName());
     }
 }

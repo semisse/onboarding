@@ -37,7 +37,7 @@ public class TestProductAdapter {
     protected CoreSession session;
 
     @Test
-    public void shouldCallTheAdapter() {
+    public void shouldCallTheProductAdapter() {
         String doctype = "product";
         String testTitle = "My Adapter Title";
 
