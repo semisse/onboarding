@@ -22,6 +22,7 @@ package org.nuxeo.onboarding.product.rest;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
@@ -30,6 +31,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 @WebObject(type = "product")
 @Produces("application/json")
@@ -37,15 +39,24 @@ import javax.ws.rs.Produces;
 public class ProductRest extends ModuleRoot {
     @GET
     @Path("price/{productId}")
-    public String getProductAndReturnPrice(@PathParam("productId") String productId) {
+    public Response getProductAndReturnPrice(@PathParam("productId") String productId) {
         return computePrice(new IdRef(productId));
     }
 
-    private String computePrice(DocumentRef documentRef) {
+    private Response computePrice(DocumentRef documentRef) {
+        if (!getContext().getCoreSession().exists(documentRef)) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
         DocumentModel product = getContext().getCoreSession().getDocument(documentRef);
-        ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
-        Double price = productAdapter.getPrice();
-        return Double.toString(price);
+
+        try {
+            ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
+            Double price = productAdapter.getPrice();
+            return Response.ok(Double.toString(price)).build();
+        } catch (NuxeoException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 }
 
