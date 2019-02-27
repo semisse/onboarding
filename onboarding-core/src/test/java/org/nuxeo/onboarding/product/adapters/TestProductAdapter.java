@@ -44,6 +44,11 @@ public class TestProductAdapter {
         DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setDocumentTitle(testTitle);
+        productAdapter.setDistributor("Test Distributor", "Test Location");
+        Assert.assertEquals("Test Distributor", productAdapter.getDistributorName());
+        Assert.assertEquals("Test Location", productAdapter.getDistributorLocation());
         Assert.assertEquals("Document title does not match when using the adapter", testTitle, productAdapter.getTitle());
     }
+
+
 }
