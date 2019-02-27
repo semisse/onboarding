@@ -49,6 +49,4 @@ public class TestProductAdapter {
         Assert.assertEquals("Test Location", productAdapter.getDistributorLocation());
         Assert.assertEquals("Document title does not match when using the adapter", testTitle, productAdapter.getTitle());
     }
-
-
 }
