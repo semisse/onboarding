@@ -19,13 +19,14 @@
 
 package org.nuxeo.onboarding.product.operations;
 
-        import org.nuxeo.ecm.core.api.CoreSession;
-        import org.nuxeo.ecm.core.api.DocumentModel;
-        import org.nuxeo.ecm.platform.filemanager.api.FileImporterContext;
-        import org.nuxeo.ecm.platform.filemanager.service.extension.AbstractFileImporter;
-        import org.nuxeo.onboarding.product.adapters.VisualAdapter;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.platform.filemanager.api.FileImporterContext;
+import org.nuxeo.ecm.platform.filemanager.service.extension.AbstractFileImporter;
+import org.nuxeo.ecm.platform.filemanager.utils.FileManagerUtils;
+import org.nuxeo.onboarding.product.adapters.VisualAdapter;
 
-        import java.io.Serializable;
+import java.io.Serializable;
 
 public class VisualImporter extends AbstractFileImporter {
 
@@ -35,6 +36,24 @@ public class VisualImporter extends AbstractFileImporter {
         DocumentModel doc = session.createDocumentModel(context.getParentPath(), context.getFileName(), "visual");
         VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
 
+        String filename = FileManagerUtils.fetchFileName(context.getBlob().getFilename());
+        String title = FileManagerUtils.fetchTitle(filename);
+
+        DocumentModel existingDocument = FileManagerUtils.getExistingDocByTitle(session, context.getParentPath(), title);
+
+        if (existingDocument != null) {
+            System.out.println("Document already exists");
+            String fileName = context.getBlob().getFilename();
+            String[] splitFileName;
+            splitFileName = fileName.split("\\.");
+            String name = splitFileName[0];
+            String extension = splitFileName[1];
+            visualAdapter.setTitle(name + "_COPY." + extension);
+            visualAdapter.setFileContent((Serializable) context.getBlob());
+            doc = session.createDocument(doc);
+            session.save();
+            return doc;
+        }
         visualAdapter.setTitle(context.getBlob().getFilename());
         visualAdapter.setFileContent((Serializable) context.getBlob());
         doc = session.createDocument(doc);
