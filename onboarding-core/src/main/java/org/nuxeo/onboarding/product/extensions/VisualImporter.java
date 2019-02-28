@@ -17,7 +17,7 @@
  *     Samuel Fialho
  */
 
-package org.nuxeo.onboarding.product.operations;
+package org.nuxeo.onboarding.product.extensions;
 
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;

@@ -17,7 +17,7 @@
  *     Samuel Fialho
  */
 
-package org.nuxeo.onboarding.product.operations;
+package org.nuxeo.onboarding.product.extensions;
 
 import com.google.inject.Inject;
 import org.junit.Before;
@@ -44,12 +44,11 @@ import static org.junit.Assert.assertNotNull;
 
 public class TestVisualImporter {
 
-    protected DocumentModel workspace;
-
     @Inject
-    protected CoreSession session;
+    private FileManager fileManager;
+    private DocumentModel workspace;
     @Inject
-    protected FileManager fileManager;
+    private CoreSession session;
 
     @Before
     public void setUp() throws Exception {
@@ -57,7 +56,7 @@ public class TestVisualImporter {
         workspace = session.createDocument(workspace);
     }
 
-    protected File getTestFile(String relativePath) {
+    private File getTestFile(String relativePath) {
         return FileUtils.getResourceFileFromContext(relativePath);
     }
 
@@ -71,7 +70,24 @@ public class TestVisualImporter {
                 .fileName("sample.jpeg")
                 .build();
         DocumentModel doc = fileManager.createOrUpdateDocument(context);
-        DocumentRef docRef = doc.getRef();
+
+        assertNotNull(doc);
+        assertEquals("sample.jpeg", doc.getProperty("dublincore", "title"));
+        Blob blob = (Blob) doc.getProperty("file", "content");
+        assertNotNull(blob);
+        assertEquals("sample.jpeg", blob.getFilename());
+    }
+
+    @Test
+    public void shouldImportDuplicatedVisualAndRenameDocument() throws IOException {
+        File file = getTestFile("sample.jpeg");
+        Blob input = Blobs.createBlob(file, "application/jpeg");
+
+        FileImporterContext context = FileImporterContext.builder(session, input, workspace.getPathAsString())
+                .overwrite(true)
+                .fileName("sample.jpeg")
+                .build();
+        DocumentModel doc = fileManager.createOrUpdateDocument(context);
 
         assertNotNull(doc);
         assertEquals("sample.jpeg", doc.getProperty("dublincore", "title"));

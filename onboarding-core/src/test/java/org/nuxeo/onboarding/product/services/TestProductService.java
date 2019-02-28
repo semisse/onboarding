@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
@@ -50,7 +49,7 @@ public class TestProductService {
     }
 
     @Test
-    public void testDocumentCreation() throws OperationException {
+    public void shouldCreateProduct() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setDocumentTitle("Test Product");
@@ -69,9 +68,8 @@ public class TestProductService {
         Assert.assertNotNull(price);
     }
 
-
     @Test
-    public void testContribution() throws OperationException {
+    public void shouldSetDistributor() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         doc = session.createDocument(doc);

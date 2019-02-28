@@ -43,7 +43,6 @@ public class VisualAdapter {
         return doc.getParentRef();
     }
 
-    // Technical properties retrieval
     public String getId() {
         return doc.getId();
     }
@@ -60,14 +59,11 @@ public class VisualAdapter {
         return doc.getCurrentLifeCycleState();
     }
 
-    // Metadata get / set
     public String getTitle() {
         return doc.getTitle();
     }
 
-    public void setTitle(String value) {
-        doc.setPropertyValue(titleXpath, value);
-    }
+    public String getFileContent() { return (String) doc.getPropertyValue("file:content"); }
 
     public String getDescription() {
         return (String) doc.getPropertyValue(descriptionXpath);
@@ -75,6 +71,10 @@ public class VisualAdapter {
 
     public void setDescription(String value) {
         doc.setPropertyValue(descriptionXpath, value);
+    }
+
+    public void setTitle(String value) {
+        doc.setPropertyValue(titleXpath, value);
     }
 
     public void setFileContent(Serializable value) {

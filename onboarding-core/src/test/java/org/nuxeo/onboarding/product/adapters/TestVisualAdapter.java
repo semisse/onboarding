@@ -26,7 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
+import org.nuxeo.onboarding.product.adapters.VisualAdapter;
+import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
@@ -38,12 +41,9 @@ public class TestVisualAdapter {
 
   @Test
   public void shouldCallTheAdapter() {
-    String doctype = "visual";
-    String testTitle = "My Adapter Title";
-
-    DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
-    VisualAdapter  visualAdapter = doc.getAdapter(VisualAdapter.class);
-    visualAdapter.setTitle(testTitle);
-    Assert.assertEquals("Document title does not match when using the adapter", testTitle, visualAdapter.getTitle());
+    DocumentModel doc = session.createDocumentModel("/", "test-adapter", "visual");
+    VisualAdapter adapter = doc.getAdapter(VisualAdapter.class);
+    adapter.setTitle("My Adapter Title");
+    Assert.assertEquals("Document title does not match when using the adapter", "My Adapter Title", adapter.getTitle());
   }
 }
