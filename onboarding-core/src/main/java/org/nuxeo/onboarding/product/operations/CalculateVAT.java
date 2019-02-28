@@ -59,10 +59,10 @@ public class CalculateVAT {
             ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
             Double price = productAdapter.getPrice();
             if (price == null) {
-                productAdapter.setDocumentPrice(1d);
+                productAdapter.setPrice(1d);
             }
             Double newPrice = productService.computePrice(product, null);
-            productAdapter.setDocumentPrice(newPrice);
+            productAdapter.setPrice(newPrice);
             return session.saveDocument(product);
         } else {
             throw new NuxeoException(DOCUMENT_TYPE_ERROR);

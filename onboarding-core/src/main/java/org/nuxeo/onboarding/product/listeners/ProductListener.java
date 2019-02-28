@@ -49,16 +49,16 @@ public class ProductListener implements EventListener {
         DocumentEventContext docCtx = (DocumentEventContext) ctx;
         DocumentModel doc = docCtx.getSourceDocument();
 
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
 
-        if (doc == null) {
+        Boolean isAvailable = productAdapter.getAvailability();
+
+        if (doc == null || productAdapter == null) {
             return;
         }
-        String type = doc.getType();
 
-        Boolean available = (Boolean) doc.getPropertyValue("product_schema:available");
-        if ("product".equals(type) && !available) {
-            ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-            product.setDocumentTitle(product.getTitle() + " - Sold Out!");
+        if (!isAvailable) {
+            productAdapter.setTitle(productAdapter.getTitle() + " - Sold Out!");
             ctx.getCoreSession().saveDocument(doc);
 
             CoreSession session = doc.getCoreSession();

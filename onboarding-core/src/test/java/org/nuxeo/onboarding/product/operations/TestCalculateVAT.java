@@ -53,8 +53,8 @@ public class TestCalculateVAT {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         doc = session.createDocument(doc);
         ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-        product.setDocumentTitle("Test Product");
-        product.setDocumentPrice(10d);
+        product.setTitle("Test Product");
+        product.setPrice(10d);
 
         OperationContext ctx = new OperationContext(session);
 
@@ -83,8 +83,8 @@ public class TestCalculateVAT {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         doc = session.createDocument(doc);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setDocumentTitle("Test Product");
-        productAdapter.setDocumentPrice(10d);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
         doc = session.saveDocument(doc);
 
         OperationContext ctx = new OperationContext(session);
@@ -105,8 +105,8 @@ public class TestCalculateVAT {
             DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
             doc = session.createDocument(doc);
             ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-            productAdapter.setDocumentTitle("Test Product");
-            productAdapter.setDocumentPrice(10d + i);
+            productAdapter.setTitle("Test Product");
+            productAdapter.setPrice(10d + i);
             doc = session.saveDocument(doc);
             listWithProducts.add(doc);
         }
@@ -139,8 +139,8 @@ public class TestCalculateVAT {
             DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
             doc = session.createDocument(doc);
             ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-            productAdapter.setDocumentTitle("Test Product");
-            productAdapter.setDocumentPrice(10d + i);
+            productAdapter.setTitle("Test Product");
+            productAdapter.setPrice(10d + i);
             doc = session.saveDocument(doc);
             listWithProducts.add(doc);
         }

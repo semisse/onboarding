@@ -72,8 +72,8 @@ public class TestProductListener {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         doc = session.createDocument(doc);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setDocumentTitle("Test Product");
-        productAdapter.setDocumentPrice(10d);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
         doc.setPropertyValue("product_schema:available", true);
         doc = session.saveDocument(doc);
 

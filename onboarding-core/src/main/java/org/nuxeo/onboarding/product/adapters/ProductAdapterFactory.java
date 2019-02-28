@@ -30,6 +30,9 @@ public class ProductAdapterFactory implements DocumentAdapterFactory {
             return new ProductAdapter(doc);
         } else if ("visual".equals(doc.getType()) && doc.hasSchema("dublincore")) {
             return new VisualAdapter(doc);
-        } else return null;
+        } else {
+            System.out.println("Wrong document type.");
+            return null;
+        }
     }
 }

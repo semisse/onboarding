@@ -52,8 +52,8 @@ public class TestProductService {
     public void shouldCreateProduct() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setDocumentTitle("Test Product");
-        productAdapter.setDocumentPrice(10d);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
         doc = session.createDocument(doc);
         doc = session.saveDocument(doc);
 
@@ -73,8 +73,8 @@ public class TestProductService {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         doc = session.createDocument(doc);
-        productAdapter.setDocumentTitle("Test Product");
-        productAdapter.setDocumentPrice(10d);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
 
         productAdapter.setDistributor("Some Store", "PT");
 

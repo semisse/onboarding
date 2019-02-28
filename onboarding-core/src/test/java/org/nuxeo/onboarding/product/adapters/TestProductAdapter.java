@@ -37,16 +37,24 @@ public class TestProductAdapter {
     protected CoreSession session;
 
     @Test
-    public void shouldCallTheProductAdapter() {
+    public void shouldCallTheProductAdapterSetAndGetProperties() {
         String doctype = "product";
-        String testTitle = "My Adapter Title";
+        String title = "My Adapter Title";
+        String description = "This is a test description";
+        Double price = 10d;
 
         DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setDocumentTitle(testTitle);
+        productAdapter.setTitle(title);
+        productAdapter.setDescription(description);
+        productAdapter.setPrice(price);
         productAdapter.setDistributor("Test Distributor", "Test Location");
+        Assert.assertEquals("Document title does not match when using the adapter", title, productAdapter.getTitle());
+        Assert.assertEquals(title, productAdapter.getTitle());
+        Assert.assertEquals(description, productAdapter.getDescription());
+        Assert.assertEquals(description, productAdapter.getDescription());
+        Assert.assertEquals(price, productAdapter.getPrice());
         Assert.assertEquals("Test Distributor", productAdapter.getDistributorName());
         Assert.assertEquals("Test Location", productAdapter.getDistributorLocation());
-        Assert.assertEquals("Document title does not match when using the adapter", testTitle, productAdapter.getTitle());
     }
 }

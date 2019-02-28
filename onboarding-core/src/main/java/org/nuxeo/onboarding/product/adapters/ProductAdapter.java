@@ -78,19 +78,21 @@ public class ProductAdapter {
         return (String) doc.getPropertyValue(descriptionXpath);
     }
 
-    public void setDescription(String value) {
-        doc.setPropertyValue(descriptionXpath, value);
-    }
-
     public Double getPrice() {
         return (Double) doc.getPropertyValue(productPrice);
     }
 
-    public void setDocumentTitle(String title) {
+    public Boolean getAvailability() { return (Boolean) doc.getPropertyValue("product_schema:available"); }
+
+    public void setTitle(String title) {
         doc.setPropertyValue(titleXpath, title);
     }
 
-    public void setDocumentPrice(Double price) {
+    public void setDescription(String value) {
+        doc.setPropertyValue(descriptionXpath, value);
+    }
+
+    public void setPrice(Double price) {
         doc.setPropertyValue(productPrice, price);
     }
 
@@ -100,5 +102,4 @@ public class ProductAdapter {
         distributor.put("Location", location);
         doc.setPropertyValue("product:Distributor", (Serializable) distributor);
     }
-
 }
