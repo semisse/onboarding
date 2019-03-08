@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -36,10 +37,23 @@ public class TestProductAdapterFactory {
     @Inject
     private CoreSession session;
 
-    @Test
+    @Test(expected = NuxeoException.class)
     public void shouldNotCallTheAdapterIfNotProductOrVisual() {
         DocumentModel doc = session.createDocumentModel("/", "test-adapter", "File");
         VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
-        Assert.assertNull(visualAdapter);
+    }
+
+    @Test
+    public void shouldCallTheProductAdapter() {
+        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "product");
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        Assert.assertNotNull(productAdapter);
+    }
+
+    @Test
+    public void shouldCallTheVisualAdapter() {
+        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "visual");
+        VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
+        Assert.assertNotNull(visualAdapter);
     }
 }

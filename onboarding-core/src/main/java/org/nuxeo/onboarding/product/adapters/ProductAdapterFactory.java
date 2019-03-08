@@ -20,9 +20,13 @@
 package org.nuxeo.onboarding.product.adapters;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.adapter.DocumentAdapterFactory;
 
 public class ProductAdapterFactory implements DocumentAdapterFactory {
+
+
+    private static final String WRONG_DOCUMENT_TYPE = "Document Type not found";
 
     @Override
     public Object getAdapter(DocumentModel doc, Class<?> itf) {
@@ -31,8 +35,7 @@ public class ProductAdapterFactory implements DocumentAdapterFactory {
         } else if ("visual".equals(doc.getType()) && doc.hasSchema("dublincore")) {
             return new VisualAdapter(doc);
         } else {
-            System.out.println("Wrong document type.");
-            return null;
+            throw new NuxeoException(WRONG_DOCUMENT_TYPE);
         }
     }
 }

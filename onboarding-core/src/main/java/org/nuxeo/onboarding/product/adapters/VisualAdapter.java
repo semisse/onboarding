@@ -43,6 +43,8 @@ public class VisualAdapter {
         return doc.getParentRef();
     }
 
+    public DocumentRef getRef() { return doc.getRef(); }
+
     public String getId() {
         return doc.getId();
     }

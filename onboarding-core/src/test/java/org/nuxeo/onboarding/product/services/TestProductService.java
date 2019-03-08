@@ -25,13 +25,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
+import org.nuxeo.onboarding.product.descriptors.VatValueDescriptor;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
@@ -43,51 +42,46 @@ public class TestProductService {
     @Inject
     protected CoreSession session;
 
-    @Test
-    public void testService() {
-        assertNotNull(productservice);
+    @Inject
+    protected VatValueDescriptor vatValueDescriptor;
+
+    @Test(expected = NuxeoException.class)
+    public void shouldThrowExceptionWhenDocIsNotProduct() {
+        DocumentModel doc = session.createDocumentModel("/", "Visual Test", "File");
+        Double docWithCalculatedVAT = productservice.computePrice(doc);
     }
 
     @Test
-    public void shouldCreateProduct() {
+    public void shouldUsePTVATWhenThereIsNoDistributor() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setTitle("Test Product");
         productAdapter.setPrice(10d);
-        doc = session.createDocument(doc);
-        doc = session.saveDocument(doc);
-
-        IdRef docIdRef = new IdRef(doc.getId());
-        doc = session.getDocument(docIdRef);
-        Assert.assertNotNull(doc);
-
-        String title = (String) doc.getPropertyValue("dc:title");
-        Assert.assertNotNull(title);
-
-        Double price = (Double) doc.getPropertyValue("product_schema:price");
-        Assert.assertNotNull(price);
+        productAdapter.save();
+        Double docWithCalculatedVAT = productservice.computePrice(doc);
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
     }
 
     @Test
-    public void shouldSetDistributor() {
+    public void shouldCalculatePriceWithVAT() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        doc = session.createDocument(doc);
         productAdapter.setTitle("Test Product");
         productAdapter.setPrice(10d);
+        productAdapter.setDistributor("Test", "PT");
+        productAdapter.save();
 
-        productAdapter.setDistributor("Some Store", "PT");
-
-        doc = session.saveDocument(doc);
-        IdRef docIdRef = new IdRef(doc.getId());
-        doc = session.getDocument(docIdRef);
-        assertNotNull(doc);
-
-        productAdapter.getDistributorName();
-        productAdapter.getDistributorLocation();
-
-        Assert.assertEquals(productAdapter.getDistributorName(), "Some Store");
-        Assert.assertEquals(productAdapter.getDistributorLocation(), "PT");
+        Double docWithCalculatedVAT = productservice.computePrice(doc);
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+        productAdapter.setDistributor("Test", "ES");
+        Assert.assertEquals(12.1d, docWithCalculatedVAT, 1);
+        productAdapter.setDistributor("Test", "DE");
+        Assert.assertEquals(11.9d, docWithCalculatedVAT, 1);
     }
 
+    /*productAdapter.setDistributor("Test", "ES");
+    Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+    productAdapter.setDistributor("Test", "DE");
+    Assert.assertEquals(11.9d, docWithCalculatedVAT, 1);*/
+    //@Deploy("")
 }

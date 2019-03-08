@@ -39,12 +39,19 @@ public class ProductAdapter {
 
     public void save() {
         CoreSession session = doc.getCoreSession();
+        doc = session.createDocument(doc);
         doc = session.saveDocument(doc);
     }
 
     public DocumentRef getParentRef() {
         return doc.getParentRef();
     }
+
+    public DocumentRef getDocRef() {
+        return doc.getRef();
+    }
+
+    public DocumentModel getDoc() { return doc; }
 
     public String getId() {
         return doc.getId();
@@ -66,6 +73,10 @@ public class ProductAdapter {
         return doc.getTitle();
     }
 
+    public void setTitle(String title) {
+        doc.setPropertyValue(titleXpath, title);
+    }
+
     public String getDistributorName() {
         return (String) doc.getPropertyValue("product:Distributor/Name");
     }
@@ -78,22 +89,24 @@ public class ProductAdapter {
         return (String) doc.getPropertyValue(descriptionXpath);
     }
 
-    public Double getPrice() {
-        return (Double) doc.getPropertyValue(productPrice);
-    }
-
-    public Boolean getAvailability() { return (Boolean) doc.getPropertyValue("product_schema:available"); }
-
-    public void setTitle(String title) {
-        doc.setPropertyValue(titleXpath, title);
-    }
-
     public void setDescription(String value) {
         doc.setPropertyValue(descriptionXpath, value);
     }
 
+    public Double getPrice() {
+        return (Double) doc.getPropertyValue(productPrice);
+    }
+
     public void setPrice(Double price) {
         doc.setPropertyValue(productPrice, price);
+    }
+
+    public Boolean getAvailability() {
+        return (Boolean) doc.getPropertyValue("product_schema:available");
+    }
+
+    public void setAvailability(Boolean availability) {
+        doc.setPropertyValue("product_schema:available", availability);
     }
 
     public void setDistributor(String name, String location) {

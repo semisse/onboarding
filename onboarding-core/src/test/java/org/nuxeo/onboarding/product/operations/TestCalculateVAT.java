@@ -49,19 +49,19 @@ public class TestCalculateVAT {
     protected AutomationService automationService;
 
     @Test
-    public void shouldVATbeUpdatedinOneProduct() throws OperationException {
+    public void shouldVATbeUpdatedInOneProduct() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        doc = session.createDocument(doc);
-        ProductAdapter product = doc.getAdapter(ProductAdapter.class);
-        product.setTitle("Test Product");
-        product.setPrice(10d);
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
+        productAdapter.save();
 
         OperationContext ctx = new OperationContext(session);
 
-        ctx.setInput(doc);
+        ctx.setInput(productAdapter.getDoc());
         automationService.run(ctx, CalculateVAT.ID);
 
-        DocumentModel returnedProduct = session.getDocument(new PathRef("/ProductTest"));
+        DocumentModel returnedProduct = session.getDocument(productAdapter.getDocRef());
 
         Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
 
@@ -81,15 +81,14 @@ public class TestCalculateVAT {
     @Test
     public void shouldProductWithoutVATbeUpdatedWithDefaultValue() throws OperationException {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        doc = session.createDocument(doc);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setTitle("Test Product");
         productAdapter.setPrice(10d);
-        doc = session.saveDocument(doc);
+        productAdapter.save();
 
         OperationContext ctx = new OperationContext(session);
 
-        ctx.setInput(doc);
+        ctx.setInput(productAdapter.getDocRef());
         DocumentModel returnedProduct = (DocumentModel) automationService.run(ctx, CalculateVAT.ID);
 
         Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
@@ -103,12 +102,11 @@ public class TestCalculateVAT {
         DocumentModelList listWithProducts = new DocumentModelListImpl();
         for (int i = 1; i < 6; i++) {
             DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
-            doc = session.createDocument(doc);
             ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
             productAdapter.setTitle("Test Product");
             productAdapter.setPrice(10d + i);
-            doc = session.saveDocument(doc);
-            listWithProducts.add(doc);
+            productAdapter.save();
+            listWithProducts.add(productAdapter.getDoc());
         }
 
         OperationContext ctx = new OperationContext(session);
@@ -137,12 +135,11 @@ public class TestCalculateVAT {
         DocumentModelList listWithProducts = new DocumentModelListImpl();
         for (int i = 1; i < 6; i++) {
             DocumentModel doc = session.createDocumentModel("/", "ProductTest" + i, "product");
-            doc = session.createDocument(doc);
             ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
             productAdapter.setTitle("Test Product");
             productAdapter.setPrice(10d + i);
-            doc = session.saveDocument(doc);
-            listWithProducts.add(doc);
+            productAdapter.save();
+            listWithProducts.add(productAdapter.getDoc());
         }
 
         OperationContext ctx = new OperationContext(session);

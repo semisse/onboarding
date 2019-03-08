@@ -61,7 +61,7 @@ public class CalculateVAT {
             if (price == null) {
                 productAdapter.setPrice(1d);
             }
-            Double newPrice = productService.computePrice(product, null);
+            Double newPrice = productService.computePrice(product);
             productAdapter.setPrice(newPrice);
             return session.saveDocument(product);
         } else {

@@ -19,7 +19,6 @@
 
 package org.nuxeo.onboarding.product.rest;
 
-import com.sun.jersey.api.client.WebResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +43,8 @@ import javax.ws.rs.core.Response;
 @Deploy("org.nuxeo.ecm.platform.url.core")
 
 public class TestProductRest extends BaseTest {
-    /*@Inject
+    /*
+    @Inject
     CoreSession session;
 
     @Before
@@ -63,5 +63,6 @@ public class TestProductRest extends BaseTest {
 
         CloseableClientResponse response = getResponse(RequestType.GET, "/");
         Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-    }*/
+    }
+    */
 }

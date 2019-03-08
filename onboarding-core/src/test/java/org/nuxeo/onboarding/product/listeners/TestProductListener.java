@@ -36,6 +36,7 @@ import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
+import org.nuxeo.onboarding.product.adapters.VisualAdapter;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -74,23 +75,22 @@ public class TestProductListener {
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setTitle("Test Product");
         productAdapter.setPrice(10d);
-        doc.setPropertyValue("product_schema:available", true);
-        doc = session.saveDocument(doc);
+        productAdapter.setAvailability(true);
+        productAdapter.save();
 
         //Create Visual
         DocumentModel visual = session.createDocumentModel("/", "Visual", "visual");
         visual = session.createDocument(visual);
-        visual.setPropertyValue("dc:title", "visual title");
-        session.saveDocument(visual);
-        DocumentModel returnedVisual = session.getDocument(new PathRef("/Visual"));
-        assertNotNull(returnedVisual);
+        VisualAdapter visualAdapter = visual.getAdapter(VisualAdapter.class);
+        visualAdapter.setTitle("visual title");
+        visualAdapter.save();
 
         //Add visual to collection
         collectionManager.addToCollection(doc, visual, session);
 
         //Set availability of the product to false
-        doc.setPropertyValue("product_schema:available", false);
-        session.saveDocument(doc);
+        productAdapter.setAvailability(false);
+        productAdapter.save();
 
         //Fire the event
         EventProducer eventProducer = Framework.getService(EventProducer.class);
@@ -99,14 +99,13 @@ public class TestProductListener {
         eventProducer.fireEvent(event);
 
         //Check permissions
-        DocumentModel folder = session.getParentDocument(visual.getRef());
+        DocumentModel folder = session.getParentDocument(visualAdapter.getRef());
         ACE[] permissions = folder.getACP().getACL("soldout").getACEs();
         Assert.assertEquals("Group1", permissions[0].getUsername());
         Assert.assertEquals(SecurityConstants.READ, permissions[0].getPermission());
         Assert.assertTrue(permissions[0].isGranted());
 
         //Check if title was changed
-        DocumentModel retrieveDoc = session.getDocument(doc.getRef());
-        Assert.assertEquals(retrieveDoc.getPropertyValue("dc:title"), "Test Product - Sold Out!");
+        Assert.assertEquals(productAdapter.getTitle(), "Test Product - Sold Out!");
     }
 }

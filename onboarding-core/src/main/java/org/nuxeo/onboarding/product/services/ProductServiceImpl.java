@@ -32,8 +32,6 @@ import java.util.Map;
 public class ProductServiceImpl extends DefaultComponent implements ProductService {
 
     protected Map<String, VatValueDescriptor> countriesVat = new HashMap<>();
-    static final String DOCUMENT_TYPE_ERROR = "The document provided is not of the type product";
-
 
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
@@ -47,18 +45,17 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
         countriesVat.remove(descriptor.getId());
     }
 
-    @Override
-    public Double computePrice(DocumentModel doc, Double countryVat) throws NuxeoException {
-        if (doc.getType().equals("product")) {
-            if (countryVat == null) {
-                countryVat = 1.23d;
-            }
-            ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+    public Double computePrice(DocumentModel doc) throws NuxeoException {
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        String distributorCountry = productAdapter.getDistributorLocation();
+
+        if (distributorCountry == null) {
+            distributorCountry = "PT";
             Double price = productAdapter.getPrice();
-            return price * countryVat;
+            return price * countriesVat.get(distributorCountry).getVatValue();
         } else {
-            throw new NuxeoException(DOCUMENT_TYPE_ERROR);
+            Double price = productAdapter.getPrice();
+            return price * countriesVat.get(distributorCountry).getVatValue();
         }
     }
-
 }
