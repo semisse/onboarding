@@ -28,7 +28,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
 import org.nuxeo.onboarding.product.adapters.ProductAdapter;
-import org.nuxeo.onboarding.product.descriptors.VatValueDescriptor;
+import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
@@ -42,9 +42,6 @@ public class TestProductService {
     @Inject
     protected CoreSession session;
 
-    @Inject
-    protected VatValueDescriptor vatValueDescriptor;
-
     @Test(expected = NuxeoException.class)
     public void shouldThrowExceptionWhenDocIsNotProduct() {
         DocumentModel doc = session.createDocumentModel("/", "Visual Test", "File");
@@ -52,11 +49,23 @@ public class TestProductService {
     }
 
     @Test
-    public void shouldUsePTVATWhenThereIsNoDistributor() {
+    public void shouldUsePTVATWhenThereIsNoDistributorLocation() {
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setTitle("Test Product");
         productAdapter.setPrice(10d);
+        productAdapter.save();
+        Double docWithCalculatedVAT = productservice.computePrice(doc);
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+    }
+
+    @Test
+    public void shouldUsePTVATWhenLocationIsNotFound() {
+        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
+        productAdapter.setDistributor("Test", "ZE");
         productAdapter.save();
         Double docWithCalculatedVAT = productservice.computePrice(doc);
         Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
@@ -70,18 +79,33 @@ public class TestProductService {
         productAdapter.setPrice(10d);
         productAdapter.setDistributor("Test", "PT");
         productAdapter.save();
-
         Double docWithCalculatedVAT = productservice.computePrice(doc);
         Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
-        productAdapter.setDistributor("Test", "ES");
-        Assert.assertEquals(12.1d, docWithCalculatedVAT, 1);
-        productAdapter.setDistributor("Test", "DE");
-        Assert.assertEquals(11.9d, docWithCalculatedVAT, 1);
     }
 
-    /*productAdapter.setDistributor("Test", "ES");
-    Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
-    productAdapter.setDistributor("Test", "DE");
-    Assert.assertEquals(11.9d, docWithCalculatedVAT, 1);*/
-    //@Deploy("")
+    @Test
+    @Deploy("org.nuxeo.onboarding.product.onboarding-core:OSGI-INF/vat-value-descriptor-contrib-test.xml")
+    public void shouldLoadNewContributions() {
+
+        // New contribution with existing key.
+        // Should apply the old value, since the new is lower.
+        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
+        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+        productAdapter.setTitle("Test Product");
+        productAdapter.setPrice(10d);
+        productAdapter.setDistributor("Test", "PT");
+        productAdapter.save();
+        Double docWithCalculatedVAT = productservice.computePrice(doc);
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+
+        // Testing with a non-existing key.
+        DocumentModel newDoc = session.createDocumentModel("/", "ProductTest", "product");
+        ProductAdapter newProductAdapter = newDoc.getAdapter(ProductAdapter.class);
+        newProductAdapter.setTitle("Test Product");
+        newProductAdapter.setPrice(10d);
+        newProductAdapter.setDistributor("Test", "FR");
+        newProductAdapter.save();
+        Double newDocWithCalculatedVAT = productservice.computePrice(newDoc);
+        Assert.assertEquals(12d, newDocWithCalculatedVAT, 1);
+    }
 }

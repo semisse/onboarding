@@ -36,7 +36,13 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         VatValueDescriptor descriptor = (VatValueDescriptor) contribution;
-        countriesVat.put(descriptor.getId(), descriptor);
+        if (countriesVat.containsKey(descriptor.getId())) {
+            VatValueDescriptor existingDescriptor = countriesVat.get(descriptor.getId());
+            descriptor = (VatValueDescriptor) existingDescriptor.merge(descriptor);
+            countriesVat.put(descriptor.getId(), (VatValueDescriptor) countriesVat.get(descriptor.getId()).merge(descriptor));
+        } else {
+            countriesVat.put(descriptor.getId(), descriptor);
+        }
     }
 
     @Override
@@ -48,14 +54,12 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
     public Double computePrice(DocumentModel doc) throws NuxeoException {
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         String distributorCountry = productAdapter.getDistributorLocation();
+        Double price = productAdapter.getPrice();
 
-        if (distributorCountry == null) {
-            distributorCountry = "PT";
-            Double price = productAdapter.getPrice();
+        if (distributorCountry != null && countriesVat.get(distributorCountry) != null) {
             return price * countriesVat.get(distributorCountry).getVatValue();
         } else {
-            Double price = productAdapter.getPrice();
-            return price * countriesVat.get(distributorCountry).getVatValue();
+            return price * countriesVat.get("PT").getVatValue();
         }
     }
 }

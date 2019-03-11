@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.onboarding.vat-value-descriptor-contrib-test">
+    <extension target="org.nuxeo.onboarding.product.services.ProductService" point="countriesVat">
+        <country id="FR">
+            <vatValue>1.20</vatValue>
+        </country>
+        <country id="PT">
+            <vatValue>1.10</vatValue>
+        </country>
+    </extension>
+</component>
