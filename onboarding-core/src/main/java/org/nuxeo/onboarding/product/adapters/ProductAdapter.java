@@ -32,6 +32,10 @@ public class ProductAdapter {
     protected String titleXpath = "dc:title";
     protected String descriptionXpath = "dc:description";
     protected String productPrice = "product_schema:price";
+    protected String productDistributor = "product:Distributor";
+    protected String distributorName = "product:Distributor/Name";
+    protected String distributorLocation = "product:Distributor/Location";
+    protected String productAvailability = "product_schema:available";
 
     public ProductAdapter(DocumentModel doc) {
         this.doc = doc;
@@ -78,11 +82,11 @@ public class ProductAdapter {
     }
 
     public String getDistributorName() {
-        return (String) doc.getPropertyValue("product:Distributor/Name");
+        return (String) doc.getPropertyValue(distributorName);
     }
 
     public String getDistributorLocation() {
-        return (String) doc.getPropertyValue("product:Distributor/Location");
+        return (String) doc.getPropertyValue(distributorLocation);
     }
 
     public String getDescription() {
@@ -102,17 +106,17 @@ public class ProductAdapter {
     }
 
     public Boolean getAvailability() {
-        return (Boolean) doc.getPropertyValue("product_schema:available");
+        return (Boolean) doc.getPropertyValue(productAvailability);
     }
 
     public void setAvailability(Boolean availability) {
-        doc.setPropertyValue("product_schema:available", availability);
+        doc.setPropertyValue(productAvailability, availability);
     }
 
     public void setDistributor(String name, String location) {
         Map<String, Serializable> distributor = new HashMap<>();
         distributor.put("Name", name);
         distributor.put("Location", location);
-        doc.setPropertyValue("product:Distributor", (Serializable) distributor);
+        doc.setPropertyValue(productDistributor, (Serializable) distributor);
     }
 }

@@ -29,6 +29,7 @@ public class VisualAdapter {
     protected DocumentModel doc;
     protected String titleXpath = "dc:title";
     protected String descriptionXpath = "dc:description";
+    protected String fileContent = "file:content";
 
     public VisualAdapter(DocumentModel doc) {
         this.doc = doc;
@@ -68,7 +69,7 @@ public class VisualAdapter {
         return doc.getTitle();
     }
 
-    public String getFileContent() { return (String) doc.getPropertyValue("file:content"); }
+    public String getFileContent() { return (String) doc.getPropertyValue(fileContent); }
 
     public String getDescription() {
         return (String) doc.getPropertyValue(descriptionXpath);
@@ -83,6 +84,6 @@ public class VisualAdapter {
     }
 
     public void setFileContent(Serializable value) {
-        doc.setPropertyValue("file:content", value);
+        doc.setPropertyValue(fileContent, value);
     }
 }

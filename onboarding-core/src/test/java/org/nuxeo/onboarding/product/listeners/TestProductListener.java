@@ -68,7 +68,7 @@ public class TestProductListener {
     }
 
     @Test
-    public void shouldChangeTheTitleToSoldOut() {
+    public void shouldChangeTheTitleToSoldOutAndMoveToFolder() {
         //Create Product
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
@@ -88,7 +88,6 @@ public class TestProductListener {
 
         //Set availability of the product to false
         productAdapter.setAvailability(false);
-        //productAdapter.save();
 
         //Fire the event
         EventProducer eventProducer = Framework.getService(EventProducer.class);
