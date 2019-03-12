@@ -43,7 +43,9 @@ public class ProductAdapter {
 
     public void save() {
         CoreSession session = doc.getCoreSession();
-        doc = session.createDocument(doc);
+        if (doc.getId() == null) {
+            doc = session.createDocument(doc);
+        }
         doc = session.saveDocument(doc);
     }
 
@@ -55,7 +57,9 @@ public class ProductAdapter {
         return doc.getRef();
     }
 
-    public DocumentModel getDoc() { return doc; }
+    public DocumentModel getDoc() {
+        return doc;
+    }
 
     public String getId() {
         return doc.getId();

@@ -42,7 +42,6 @@ public class VisualImporter extends AbstractFileImporter {
         DocumentModel existingDocument = FileManagerUtils.getExistingDocByTitle(session, context.getParentPath(), title);
 
         if (existingDocument != null) {
-            System.out.println("Document already exists");
             String fileName = context.getBlob().getFilename();
             String[] splitFileName;
             splitFileName = fileName.split("\\.");

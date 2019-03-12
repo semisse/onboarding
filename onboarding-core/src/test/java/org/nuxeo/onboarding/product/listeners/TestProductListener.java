@@ -88,6 +88,7 @@ public class TestProductListener {
 
         //Set availability of the product to false
         productAdapter.setAvailability(false);
+        productAdapter.save();
 
         //Fire the event
         EventProducer eventProducer = Framework.getService(EventProducer.class);
