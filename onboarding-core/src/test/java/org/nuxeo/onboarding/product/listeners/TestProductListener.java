@@ -71,30 +71,28 @@ public class TestProductListener {
     public void shouldChangeTheTitleToSoldOut() {
         //Create Product
         DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        doc = session.createDocument(doc);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         productAdapter.setTitle("Test Product");
         productAdapter.setPrice(10d);
-        productAdapter.setAvailability(true);
+        productAdapter.setAvailability(false);
         productAdapter.save();
 
         //Create Visual
         DocumentModel visual = session.createDocumentModel("/", "Visual", "visual");
-        visual = session.createDocument(visual);
         VisualAdapter visualAdapter = visual.getAdapter(VisualAdapter.class);
-        visualAdapter.setTitle("visual title");
+        visual.setPropertyValue("dc:title", "visual title");
         visualAdapter.save();
 
         //Add visual to collection
-        collectionManager.addToCollection(doc, visual, session);
+        collectionManager.addToCollection(productAdapter.getDoc(), visualAdapter.getDoc(), session);
 
         //Set availability of the product to false
         productAdapter.setAvailability(false);
-        productAdapter.save();
+        //productAdapter.save();
 
         //Fire the event
         EventProducer eventProducer = Framework.getService(EventProducer.class);
-        DocumentEventContext ctx = new DocumentEventContext(session, session.getPrincipal(), doc);
+        DocumentEventContext ctx = new DocumentEventContext(session, session.getPrincipal(), productAdapter.getDoc());
         Event event = ctx.newEvent("soldoutEvent");
         eventProducer.fireEvent(event);
 
@@ -107,5 +105,9 @@ public class TestProductListener {
 
         //Check if title was changed
         Assert.assertEquals(productAdapter.getTitle(), "Test Product - Sold Out!");
+
+        // Check if it was moved
+        DocumentModel newLocation = session.getDocument(visualAdapter.getRef());
+        Assert.assertEquals(newLocation.getPathAsString(), "/default-domain/workspaces/Sold Out folder/Visual");
     }
 }

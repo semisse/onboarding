@@ -62,9 +62,9 @@ public class ProductListener implements EventListener {
             ctx.getCoreSession().saveDocument(doc);
 
             CoreSession session = doc.getCoreSession();
-            DocumentModel folder = session.createDocumentModel("/", "Sold Out folder", "Folder");
+            DocumentModel folder = session.createDocumentModel("/default-domain/workspaces", "Sold Out folder", "Folder");
             folder = session.createDocument(folder);
-            ctx.getCoreSession().saveDocument(folder);
+            session.saveDocument(folder);
 
             List<DocumentRef> visualsInProduct = doc.getAdapter(Collection.class)
                     .getCollectedDocumentIds()
@@ -77,7 +77,8 @@ public class ProductListener implements EventListener {
             folder.setACP(acp, true);
 
             DocumentRef folderRef = folder.getRef();
-            ctx.getCoreSession().move(visualsInProduct, folderRef);
+            session.move(visualsInProduct, folderRef);
+            session.save();
         }
     }
 }

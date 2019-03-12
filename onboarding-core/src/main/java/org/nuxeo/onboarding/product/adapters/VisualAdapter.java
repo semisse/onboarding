@@ -36,8 +36,11 @@ public class VisualAdapter {
 
     public void save() {
         CoreSession session = doc.getCoreSession();
+        doc = session.createDocument(doc);
         doc = session.saveDocument(doc);
     }
+
+    public DocumentModel getDoc() { return doc; }
 
     public DocumentRef getParentRef() {
         return doc.getParentRef();
