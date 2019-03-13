@@ -27,9 +27,9 @@ import java.io.Serializable;
 
 public class VisualAdapter {
     protected DocumentModel doc;
-    protected String titleXpath = "dc:title";
-    protected String descriptionXpath = "dc:description";
-    protected String fileContent = "file:content";
+    protected final static String TITLE = "dc:title";
+    protected final static String DESCRIPTION = "dc:description";
+    protected final static String FILE_CONTENT = "file:content";
 
     public VisualAdapter(DocumentModel doc) {
         this.doc = doc;
@@ -37,7 +37,9 @@ public class VisualAdapter {
 
     public void save() {
         CoreSession session = doc.getCoreSession();
-        doc = session.createDocument(doc);
+        if (doc.getId() == null) {
+            doc = session.createDocument(doc);
+        }
         doc = session.saveDocument(doc);
     }
 
@@ -69,21 +71,21 @@ public class VisualAdapter {
         return doc.getTitle();
     }
 
-    public String getFileContent() { return (String) doc.getPropertyValue(fileContent); }
+    public Serializable getFileContent() { return doc.getPropertyValue(FILE_CONTENT); }
 
     public String getDescription() {
-        return (String) doc.getPropertyValue(descriptionXpath);
+        return (String) doc.getPropertyValue(DESCRIPTION);
     }
 
     public void setDescription(String value) {
-        doc.setPropertyValue(descriptionXpath, value);
+        doc.setPropertyValue(DESCRIPTION, value);
     }
 
     public void setTitle(String value) {
-        doc.setPropertyValue(titleXpath, value);
+        doc.setPropertyValue(TITLE, value);
     }
 
     public void setFileContent(Serializable value) {
-        doc.setPropertyValue(fileContent, value);
+        doc.setPropertyValue(FILE_CONTENT, value);
     }
 }

@@ -21,6 +21,7 @@ package org.nuxeo.onboarding.product.services;
 
 import com.google.inject.Inject;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -32,80 +33,83 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
+import static org.nuxeo.onboarding.product.utils.DummyData.*;
+
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
 public class TestProductService {
+    DocumentModel productDocument;
+    ProductAdapter productAdapter;
+    protected static final String DOCUMENT_TYPE_PRODUCT = "product";
 
     @Inject
     protected ProductService productservice;
-
     @Inject
     protected CoreSession session;
 
+    @Before
+    public void setUp() {
+        productDocument = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_PRODUCT, DOCUMENT_TYPE_PRODUCT);
+        productAdapter = productDocument.getAdapter(ProductAdapter.class);
+        productAdapter.setTitle(DOCUMENT_TITLE);
+        productAdapter.setPrice(PRICE);
+        productAdapter.setDistributor(DISTRIBUTOR_NAME, DISTRIBUTOR_LOCATION_PT);
+        productAdapter.save();
+    }
+
     @Test(expected = NuxeoException.class)
     public void shouldThrowExceptionWhenDocIsNotProduct() {
-        DocumentModel doc = session.createDocumentModel("/", "Visual Test", "File");
-        Double docWithCalculatedVAT = productservice.computePrice(doc);
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, "File");
+        productservice.computePrice(doc);
     }
 
     @Test
     public void shouldUsePTVATWhenThereIsNoDistributorLocation() {
-        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setTitle("Test Product");
-        productAdapter.setPrice(10d);
-        productAdapter.save();
-        Double docWithCalculatedVAT = productservice.computePrice(doc);
-        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+        productAdapter.setDistributor(DISTRIBUTOR_NAME, "");
+        Double docWithCalculatedVAT = productservice.computePrice(productAdapter.getDoc());
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 0.1);
     }
 
     @Test
     public void shouldUsePTVATWhenLocationIsNotFound() {
-        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setTitle("Test Product");
-        productAdapter.setPrice(10d);
-        productAdapter.setDistributor("Test", "ZE");
+        productAdapter.setDistributor(DISTRIBUTOR_NAME, DISTRIBUTOR_LOCATION_US);
         productAdapter.save();
-        Double docWithCalculatedVAT = productservice.computePrice(doc);
-        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+        Double docWithCalculatedVAT = productservice.computePrice(productAdapter.getDoc());
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 0.1);
     }
 
     @Test
     public void shouldCalculatePriceWithVAT() {
-        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setTitle("Test Product");
-        productAdapter.setPrice(10d);
-        productAdapter.setDistributor("Test", "PT");
+        productAdapter.setDistributor(DISTRIBUTOR_NAME, DISTRIBUTOR_LOCATION_DE);
         productAdapter.save();
-        Double docWithCalculatedVAT = productservice.computePrice(doc);
-        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+        Double docWithCalculatedVAT = productservice.computePrice(productAdapter.getDoc());
+        Assert.assertEquals(11.9d, docWithCalculatedVAT, 0.1);
     }
 
     @Test
     @Deploy("org.nuxeo.onboarding.product.onboarding-core:OSGI-INF/vat-value-descriptor-contrib-test.xml")
     public void shouldLoadNewContributions() {
-
         // New contribution with existing key.
         // Should apply the old value, since the new is lower.
-        DocumentModel doc = session.createDocumentModel("/", "ProductTest", "product");
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setTitle("Test Product");
-        productAdapter.setPrice(10d);
-        productAdapter.setDistributor("Test", "PT");
-        productAdapter.save();
-        Double docWithCalculatedVAT = productservice.computePrice(doc);
-        Assert.assertEquals(12.3d, docWithCalculatedVAT, 1);
+        Double docWithCalculatedVAT = productservice.computePrice(productAdapter.getDoc());
+        Assert.assertEquals(12.3d, docWithCalculatedVAT, 0.1);
 
         // Testing with a non-existing key.
-        DocumentModel newDoc = session.createDocumentModel("/", "ProductTest", "product");
+        DocumentModel newDoc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_PRODUCT, DOCUMENT_TYPE_PRODUCT);
         ProductAdapter newProductAdapter = newDoc.getAdapter(ProductAdapter.class);
-        newProductAdapter.setTitle("Test Product");
-        newProductAdapter.setPrice(10d);
-        newProductAdapter.setDistributor("Test", "FR");
+        newProductAdapter.setTitle(DOCUMENT_TITLE);
+        newProductAdapter.setPrice(PRICE);
+        newProductAdapter.setDistributor(DISTRIBUTOR_NAME, DISTRIBUTOR_LOCATION_FR);
         newProductAdapter.save();
         Double newDocWithCalculatedVAT = productservice.computePrice(newDoc);
-        Assert.assertEquals(12d, newDocWithCalculatedVAT, 1);
+        Assert.assertEquals(12d, newDocWithCalculatedVAT, 0.1);
     }
+    @Test(expected = NuxeoException.class)
+    @Deploy("org.nuxeo.onboarding.product.onboarding-core:OSGI-INF/vat-value-descriptor-error-contrib-test.xml")
+    public void shouldThrowAnNuxeoExceptionIfThereAreNoIdsInContributionFile () {
+        DocumentModel newDoc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_PRODUCT, DOCUMENT_TYPE_PRODUCT);
+        ProductAdapter newProductAdapter = newDoc.getAdapter(ProductAdapter.class);
+        productservice.computePrice(newProductAdapter.getDoc());
+    }
+
 }

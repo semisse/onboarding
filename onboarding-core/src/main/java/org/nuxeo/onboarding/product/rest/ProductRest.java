@@ -37,6 +37,11 @@ import javax.ws.rs.core.Response;
 @Produces("application/json")
 @Path("product")
 public class ProductRest extends ModuleRoot {
+    /**
+     *
+     * @param productId
+     * @return
+     */
     @GET
     @Path("price/{productId}")
     public Response getProductAndReturnPrice(@PathParam("productId") String productId) {

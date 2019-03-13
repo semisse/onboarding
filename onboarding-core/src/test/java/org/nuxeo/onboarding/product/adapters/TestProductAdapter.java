@@ -30,31 +30,30 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 
+import static org.nuxeo.onboarding.product.utils.DummyData.*;
+
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
 public class TestProductAdapter {
+    protected static final String DOCUMENT_TYPE_PRODUCT = "product";
+
     @Inject
     protected CoreSession session;
 
     @Test
     public void shouldCallTheProductAdapterSetAndGetProperties() {
-        String doctype = "product";
-        String title = "My Adapter Title";
-        String description = "This is a test description";
-        Double price = 10d;
-
-        DocumentModel doc = session.createDocumentModel("/", "test-adapter", doctype);
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_PRODUCT, DOCUMENT_TYPE_PRODUCT);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-        productAdapter.setTitle(title);
-        productAdapter.setDescription(description);
-        productAdapter.setPrice(price);
-        productAdapter.setDistributor("Test Distributor", "Test Location");
-        Assert.assertEquals("Document title does not match when using the adapter", title, productAdapter.getTitle());
-        Assert.assertEquals(title, productAdapter.getTitle());
-        Assert.assertEquals(description, productAdapter.getDescription());
-        Assert.assertEquals(description, productAdapter.getDescription());
-        Assert.assertEquals(price, productAdapter.getPrice());
-        Assert.assertEquals("Test Distributor", productAdapter.getDistributorName());
-        Assert.assertEquals("Test Location", productAdapter.getDistributorLocation());
+        productAdapter.setTitle(DOCUMENT_TITLE);
+        productAdapter.setDescription(DESCRIPTION);
+        productAdapter.setPrice(PRICE);
+        productAdapter.setDistributor(DISTRIBUTOR_NAME, DISTRIBUTOR_LOCATION_PT);
+        Assert.assertEquals(TITLE_NOT_MATCH, DOCUMENT_TITLE, productAdapter.getTitle());
+        Assert.assertEquals(DOCUMENT_TITLE, productAdapter.getTitle());
+        Assert.assertEquals(DESCRIPTION, productAdapter.getDescription());
+        Assert.assertEquals(DESCRIPTION, productAdapter.getDescription());
+        Assert.assertEquals(PRICE, productAdapter.getPrice());
+        Assert.assertEquals(DISTRIBUTOR_NAME, productAdapter.getDistributorNameField());
+        Assert.assertEquals(DISTRIBUTOR_LOCATION_PT, productAdapter.getDistributorLocation());
     }
 }

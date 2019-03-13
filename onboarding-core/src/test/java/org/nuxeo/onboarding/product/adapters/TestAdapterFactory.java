@@ -31,28 +31,33 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 
+import static org.nuxeo.onboarding.product.utils.DummyData.*;
+
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
-public class TestProductAdapterFactory {
+public class TestAdapterFactory {
+    protected static final String DOCUMENT_TYPE_PRODUCT = "product";
+    protected static final String DOCUMENT_TYPE_VISUAL = "visual";
+
     @Inject
-    private CoreSession session;
+    protected CoreSession session;
 
     @Test(expected = NuxeoException.class)
     public void shouldNotCallTheAdapterIfNotProductOrVisual() {
-        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "File");
-        VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, "File");
+        doc.getAdapter(VisualAdapter.class);
     }
 
     @Test
-    public void shouldCallTheProductAdapter() {
-        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "product");
+    public void shouldCallAndGetTheProductAdapter() {
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_PRODUCT, DOCUMENT_TYPE_PRODUCT);
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         Assert.assertNotNull(productAdapter);
     }
 
     @Test
-    public void shouldCallTheVisualAdapter() {
-        DocumentModel doc = session.createDocumentModel("/", "test-adapter", "visual");
+    public void shouldCallAndGetTheVisualAdapter() {
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, DOCUMENT_TYPE_VISUAL);
         VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
         Assert.assertNotNull(visualAdapter);
     }

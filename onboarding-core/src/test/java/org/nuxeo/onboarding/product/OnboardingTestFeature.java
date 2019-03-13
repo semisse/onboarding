@@ -28,8 +28,7 @@ import org.nuxeo.runtime.test.runner.RunnerFeature;
 
 @Features({AutomationFeature.class, CollectionFeature.class})
 @Deploy({"org.nuxeo.onboarding.product.onboarding-core",
-        "studio.extensions.sfialho-SANDBOX",
-        "org.nuxeo.ecm.platform.filemanager.core",
+        "studio.extensions.sfialho-SANDBOX"
 })
 public class OnboardingTestFeature implements RunnerFeature {
 

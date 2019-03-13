@@ -20,13 +20,9 @@
 package org.nuxeo.onboarding.product.listeners;
 
 import org.nuxeo.ecm.collections.core.adapter.Collection;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACP;
-import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.core.api.security.impl.ACPImpl;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventContext;
@@ -39,6 +35,14 @@ import java.util.stream.Collectors;
 
 public class ProductListener implements EventListener {
 
+    protected final static String SOLD_OUT = " - Sold Out!";
+    protected final static String WORKSPACES = "/default-domain/workspaces";
+    protected final static String FOLDER = "Folder";
+    protected final static String SOLD_OUT_FOLDER = "Sold Out folder";
+    protected final static String ACL_NAME = "soldout";
+    protected final static String GROUP1 = "group1";
+    protected final static String READ = "Read";
+
     @Override
     public void handleEvent(Event event) {
         EventContext ctx = event.getContext();
@@ -49,36 +53,38 @@ public class ProductListener implements EventListener {
         DocumentEventContext docCtx = (DocumentEventContext) ctx;
         DocumentModel doc = docCtx.getSourceDocument();
 
-        ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
-
-        Boolean isAvailable = productAdapter.getAvailability();
-
-        if (doc == null || productAdapter == null) {
+        if (doc == null) {
             return;
-        }
+        } else if (!doc.getType().equals("product")) {
+            event.markBubbleException();
+            throw new NuxeoException("The document is not a Product");
+        } else {
+            ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
+            Boolean isAvailable = productAdapter.getAvailability();
 
-        if (!isAvailable) {
-            productAdapter.setTitle(productAdapter.getTitle() + " - Sold Out!");
-            ctx.getCoreSession().saveDocument(doc);
+            if (!isAvailable) {
+                productAdapter.setTitle(productAdapter.getTitle() + SOLD_OUT);
+                ctx.getCoreSession().saveDocument(doc);
 
-            CoreSession session = doc.getCoreSession();
-            DocumentModel folder = session.createDocumentModel("/default-domain/workspaces", "Sold Out folder", "Folder");
-            folder = session.createDocument(folder);
-            session.saveDocument(folder);
+                CoreSession session = doc.getCoreSession();
+                DocumentModel folder = session.createDocumentModel(WORKSPACES, SOLD_OUT_FOLDER, FOLDER);
+                folder = session.createDocument(folder);
+                session.saveDocument(folder);
 
-            List<DocumentRef> visualsInProduct = doc.getAdapter(Collection.class)
-                    .getCollectedDocumentIds()
-                    .stream()
-                    .map(IdRef::new)
-                    .collect(Collectors.toList());
+                List<DocumentRef> visualsInProduct = doc.getAdapter(Collection.class)
+                        .getCollectedDocumentIds()
+                        .stream()
+                        .map(IdRef::new)
+                        .collect(Collectors.toList());
 
-            ACP acp = new ACPImpl();
-            acp.addACE("soldout", new ACE("Group1", SecurityConstants.READ, true));
-            folder.setACP(acp, true);
+                ACP acp = new ACPImpl();
+                acp.addACE(ACL_NAME, new ACE(GROUP1, READ, true));
+                folder.setACP(acp, true);
 
-            DocumentRef folderRef = folder.getRef();
-            session.move(visualsInProduct, folderRef);
-            session.save();
+                DocumentRef folderRef = folder.getRef();
+                session.move(visualsInProduct, folderRef);
+                session.save();
+            }
         }
     }
 }

@@ -25,6 +25,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProductApp extends WebEngineModule {
+    /**
+     *
+     * @return
+     */
     @Override
     public Set<Class<?>> getClasses() {
         HashSet<Class<?>> result = new HashSet<Class<?>>();

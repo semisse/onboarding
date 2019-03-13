@@ -30,17 +30,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProductServiceImpl extends DefaultComponent implements ProductService {
-
-    protected Map<String, VatValueDescriptor> countriesVat = new HashMap<>();
+    protected static final String COUNTRY_NAME = "PT";
+    private Map<String, VatValueDescriptor> countriesVat = new HashMap<>();
 
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         VatValueDescriptor descriptor = (VatValueDescriptor) contribution;
         if (countriesVat.containsKey(descriptor.getId())) {
             VatValueDescriptor existingDescriptor = countriesVat.get(descriptor.getId());
-            descriptor = (VatValueDescriptor) existingDescriptor.merge(descriptor);
-            countriesVat.put(descriptor.getId(), (VatValueDescriptor) countriesVat.get(descriptor.getId()).merge(descriptor));
-        } else {
+            existingDescriptor.merge(descriptor);
+        } else if (!countriesVat.containsKey(descriptor.getId())) {
             countriesVat.put(descriptor.getId(), descriptor);
         }
     }
@@ -51,6 +50,7 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
         countriesVat.remove(descriptor.getId());
     }
 
+    @Override
     public Double computePrice(DocumentModel doc) throws NuxeoException {
         ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
         String distributorCountry = productAdapter.getDistributorLocation();
@@ -58,8 +58,10 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
 
         if (distributorCountry != null && countriesVat.get(distributorCountry) != null) {
             return price * countriesVat.get(distributorCountry).getVatValue();
+        } else if (countriesVat.get(distributorCountry) == null) {
+            return price * countriesVat.get(COUNTRY_NAME).getVatValue();
         } else {
-            return price * countriesVat.get("PT").getVatValue();
+            throw new NuxeoException("Could not find any ID's in the contribution file");
         }
     }
 }

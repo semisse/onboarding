@@ -23,16 +23,17 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.adapter.DocumentAdapterFactory;
 
-public class ProductAdapterFactory implements DocumentAdapterFactory {
+public class AdapterFactory implements DocumentAdapterFactory {
 
 
     private static final String WRONG_DOCUMENT_TYPE = "Document Type not found";
+    private static final String DUBLINCORE = "dublincore";
 
     @Override
     public Object getAdapter(DocumentModel doc, Class<?> itf) {
-        if ("product".equals(doc.getType()) && doc.hasSchema("dublincore")) {
+        if ("product".equals(doc.getType()) && doc.hasSchema(DUBLINCORE)) {
             return new ProductAdapter(doc);
-        } else if ("visual".equals(doc.getType()) && doc.hasSchema("dublincore")) {
+        } else if ("visual".equals(doc.getType()) && doc.hasSchema(DUBLINCORE)) {
             return new VisualAdapter(doc);
         } else {
             throw new NuxeoException(WRONG_DOCUMENT_TYPE);

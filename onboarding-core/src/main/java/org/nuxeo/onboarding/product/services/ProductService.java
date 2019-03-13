@@ -20,7 +20,15 @@
 package org.nuxeo.onboarding.product.services;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 
 public interface ProductService {
-    Double computePrice(DocumentModel doc);
+
+    /**
+     *
+     * @param doc
+     * @return
+     * @throws NuxeoException
+     */
+    Double computePrice(DocumentModel doc) throws NuxeoException;
 }

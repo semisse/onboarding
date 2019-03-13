@@ -31,6 +31,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.filemanager.api.FileImporterContext;
 import org.nuxeo.ecm.platform.filemanager.api.FileManager;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
+import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
@@ -39,70 +40,74 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.nuxeo.onboarding.product.utils.DummyData.*;
 
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
-
+@Deploy("org.nuxeo.ecm.platform.filemanager.core")
 public class TestVisualImporter {
 
-    @Inject
-    private FileManager fileManager;
     private DocumentModel workspace;
-    @Inject
-    private CoreSession session;
 
-    @Before
-    public void setUp() throws Exception {
-        workspace = session.createDocumentModel("/", "workspace", "Workspace");
-        workspace = session.createDocument(workspace);
-    }
+    @Inject
+    protected FileManager fileManager;
+
+    @Inject
+    protected CoreSession session;
 
     private File getTestFile(String relativePath) {
         return FileUtils.getResourceFileFromContext(relativePath);
     }
 
+    @Before
+    public void setUp() {
+        workspace = session.createDocumentModel(WORKSPACE_ROOT, WORKSPACE_NAME, WORKSPACE_TITLE);
+        workspace = session.createDocument(workspace);
+    }
+
     @Test
     public void shouldImportVisual() throws IOException {
-        File file = getTestFile("sample.jpeg");
+        File file = getTestFile(SAMPLE_JPEG);
         Blob input = Blobs.createBlob(file, "application/jpeg");
 
         FileImporterContext context = FileImporterContext.builder(session, input, workspace.getPathAsString())
                 .overwrite(true)
-                .fileName("sample.jpeg")
+                .fileName(SAMPLE_JPEG)
                 .build();
         DocumentModel doc = fileManager.createOrUpdateDocument(context);
 
         assertNotNull(doc);
-        assertEquals("sample.jpeg", doc.getProperty("dublincore", "title"));
+        assertEquals(SAMPLE_JPEG, doc.getProperty("dublincore", "title"));
         Blob blob = (Blob) doc.getProperty("file", "content");
         assertNotNull(blob);
-        assertEquals("sample.jpeg", blob.getFilename());
+        assertEquals(SAMPLE_JPEG, blob.getFilename());
     }
 
     @Test
     public void shouldImportDuplicatedVisualAndRenameDocument() throws IOException {
-        File file = getTestFile("sample.jpeg");
+        File file = getTestFile(SAMPLE_JPEG);
         Blob input = Blobs.createBlob(file, "application/jpeg");
 
         FileImporterContext context = FileImporterContext.builder(session, input, workspace.getPathAsString())
                 .overwrite(true)
-                .fileName("sample.jpeg")
+                .fileName(SAMPLE_JPEG)
                 .build();
         DocumentModel doc = fileManager.createOrUpdateDocument(context);
+        session.save();
 
         assertNotNull(doc);
-        assertEquals("sample.jpeg", doc.getProperty("dublincore", "title"));
+        assertEquals(SAMPLE_JPEG, doc.getProperty("dublincore", "title"));
         Blob blob = (Blob) doc.getProperty("file", "content");
         assertNotNull(blob);
-        assertEquals("sample.jpeg", blob.getFilename());
+        assertEquals(SAMPLE_JPEG, blob.getFilename());
 
         // create again with same file
-        doc = fileManager.createOrUpdateDocument(context);
-        assertNotNull(doc);
+        DocumentModel duplicatedDocument = fileManager.createOrUpdateDocument(context);
+        assertNotNull(duplicatedDocument);
 
-        assertEquals("sample_COPY.jpeg", doc.getProperty("dublincore", "title"));
-        blob = (Blob) doc.getProperty("file", "content");
-        assertNotNull(blob);
-        assertEquals("sample.jpeg", blob.getFilename());
+        assertEquals("sample_COPY.jpeg", duplicatedDocument.getProperty("dublincore", "title"));
+        Blob duplicatedBlob = (Blob) duplicatedDocument.getProperty("file", "content");
+        assertNotNull(duplicatedBlob);
+        assertEquals(SAMPLE_JPEG, duplicatedBlob.getFilename());
     }
 }

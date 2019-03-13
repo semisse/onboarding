@@ -32,8 +32,10 @@ import org.nuxeo.onboarding.product.services.ProductService;
 
 @Operation(id = CalculateVAT.ID, category = Constants.CAT_DOCUMENT, label = "add vat to price product", description = "Describe here what your operation does.")
 public class CalculateVAT {
-    public static final String ID = "Document.CalculateVAT";
-    static final String DOCUMENT_TYPE_ERROR = "The document provided is not of the type product";
+    protected static final String ID = "Document.CalculateVAT";
+    protected static final String DOCUMENT_TYPE_ERROR = "The document provided is not of the type product";
+    protected static final String TYPE = "type";
+    protected static final String PRODUCT = "product";
 
     @Context
     protected ProductService productService;
@@ -47,25 +49,25 @@ public class CalculateVAT {
     }
 
     @OperationMethod
-    public DocumentModelList run(DocumentModelList products) {
-        for (DocumentModel product : products) {
-            getProductAndSetNewPrice(product);
+    public DocumentModelList run(DocumentModelList products) throws Exception {
+        for (DocumentModel productItem : products) {
+            if (productItem.getType().equals("product")) {
+                getProductAndSetNewPrice(productItem);
+            } else {
+                throw new Exception(DOCUMENT_TYPE_ERROR);
+            }
         }
         return products;
     }
 
     private DocumentModel getProductAndSetNewPrice(DocumentModel product) throws NuxeoException {
-        if (product.getType().equals("product")) {
-            ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
-            Double price = productAdapter.getPrice();
-            if (price == null) {
-                productAdapter.setPrice(1d);
-            }
-            Double newPrice = productService.computePrice(product);
-            productAdapter.setPrice(newPrice);
-            return session.saveDocument(product);
-        } else {
-            throw new NuxeoException(DOCUMENT_TYPE_ERROR);
+        ProductAdapter productAdapter = product.getAdapter(ProductAdapter.class);
+        Double price = productAdapter.getPrice();
+        if (price == null) {
+            productAdapter.setPrice(1d);
         }
+        Double newPrice = productService.computePrice(product);
+        productAdapter.setPrice(newPrice);
+        return session.saveDocument(product);
     }
 }

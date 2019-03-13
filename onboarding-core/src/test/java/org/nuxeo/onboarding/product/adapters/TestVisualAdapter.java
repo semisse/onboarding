@@ -22,39 +22,46 @@ package org.nuxeo.onboarding.product.adapters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.common.utils.FileUtils;
+import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.onboarding.product.OnboardingTestFeature;
+import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+
+import static org.nuxeo.onboarding.product.utils.DummyData.*;
 
 @RunWith(FeaturesRunner.class)
 @Features({OnboardingTestFeature.class})
+@Deploy("org.nuxeo.ecm.platform.filemanager.core")
 public class TestVisualAdapter {
     @Inject
-    private CoreSession session;
+    protected CoreSession session;
+    protected File getTestFile(String relativePath) {
+        return FileUtils.getResourceFileFromContext(relativePath);
+    }
+    protected static final String DOCUMENT_TYPE_VISUAL = "visual";
 
     @Test
-    public void shouldCallTheVisualAdapterAndSetProperties() {
-        String doctype = "visual";
-        String title = "Test Visual";
-        String description = "This is a test description";
-
-        DocumentModel doc = session.createDocumentModel("/", "ProductTest", doctype);
-        doc = session.createDocument(doc);
+    public void shouldCallTheVisualAdapterAndSetProperties() throws IOException {
+        File file = getTestFile(SAMPLE_JPEG);
+        Blob originalBlob = Blobs.createBlob(file, "image/jpeg", null, null);
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, DOCUMENT_TYPE_VISUAL);
         VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
-        visualAdapter.setTitle(title);
-        visualAdapter.setDescription(description);
+        visualAdapter.setTitle(DOCUMENT_TITLE);
+        visualAdapter.setDescription(DESCRIPTION);
+        visualAdapter.setFileContent((Serializable) originalBlob);
         visualAdapter.save();
-
-        IdRef docIdRef = new IdRef(doc.getId());
-        doc = session.getDocument(docIdRef);
-        Assert.assertNotNull(doc);
-
-        Assert.assertEquals(title, visualAdapter.getTitle());
-        Assert.assertEquals(description, visualAdapter.getDescription());
+        Assert.assertEquals(DOCUMENT_TITLE, visualAdapter.getTitle());
+        Assert.assertEquals(DESCRIPTION, visualAdapter.getDescription());
+        Assert.assertEquals(originalBlob, visualAdapter.getFileContent());
     }
 }

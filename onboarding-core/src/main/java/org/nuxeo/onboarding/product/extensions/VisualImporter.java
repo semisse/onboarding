@@ -29,11 +29,13 @@ import org.nuxeo.onboarding.product.adapters.VisualAdapter;
 import java.io.Serializable;
 
 public class VisualImporter extends AbstractFileImporter {
+    protected final static String VISUAL = "visual";
+    protected final static String COPY = "_COPY.";
 
     @Override
     public DocumentModel createOrUpdate(FileImporterContext context) {
         CoreSession session = context.getSession();
-        DocumentModel doc = session.createDocumentModel(context.getParentPath(), context.getFileName(), "visual");
+        DocumentModel doc = session.createDocumentModel(context.getParentPath(), context.getFileName(), VISUAL);
         VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
 
         String filename = FileManagerUtils.fetchFileName(context.getBlob().getFilename());
@@ -47,17 +49,14 @@ public class VisualImporter extends AbstractFileImporter {
             splitFileName = fileName.split("\\.");
             String name = splitFileName[0];
             String extension = splitFileName[1];
-            visualAdapter.setTitle(name + "_COPY." + extension);
+            visualAdapter.setTitle(name + COPY + extension);
             visualAdapter.setFileContent((Serializable) context.getBlob());
-            doc = session.createDocument(doc);
-            session.save();
-            return doc;
+            visualAdapter.save();
+            return visualAdapter.getDoc();
         }
         visualAdapter.setTitle(context.getBlob().getFilename());
         visualAdapter.setFileContent((Serializable) context.getBlob());
-        doc = session.createDocument(doc);
-        session.save();
-
-        return doc;
+        visualAdapter.save();
+        return visualAdapter.getDoc();
     }
 }
