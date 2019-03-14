@@ -46,18 +46,20 @@ import static org.nuxeo.onboarding.product.utils.DummyData.*;
 @Features({OnboardingTestFeature.class})
 @Deploy("org.nuxeo.ecm.platform.filemanager.core")
 public class TestVisualImporter {
-
-    private DocumentModel workspace;
-
     @Inject
     protected FileManager fileManager;
-
     @Inject
     protected CoreSession session;
-
-    private File getTestFile(String relativePath) {
+    protected DocumentModel workspace;
+    protected File getTestFile(String relativePath) {
         return FileUtils.getResourceFileFromContext(relativePath);
     }
+    protected final static String MIME_TYPE = "application/jpeg";
+    protected final static String DUBLIN_CORE = "dublincore";
+    protected final static String TITLE = "title";
+    protected final static String FILE = "file";
+    protected final static String CONTENT = "content";
+    protected final static String NEW_TITLE = "sample_COPY.jpeg";
 
     @Before
     public void setUp() {
@@ -68,17 +70,16 @@ public class TestVisualImporter {
     @Test
     public void shouldImportVisual() throws IOException {
         File file = getTestFile(SAMPLE_JPEG);
-        Blob input = Blobs.createBlob(file, "application/jpeg");
+        Blob input = Blobs.createBlob(file, MIME_TYPE);
 
         FileImporterContext context = FileImporterContext.builder(session, input, workspace.getPathAsString())
                 .overwrite(true)
                 .fileName(SAMPLE_JPEG)
                 .build();
         DocumentModel doc = fileManager.createOrUpdateDocument(context);
-
         assertNotNull(doc);
-        assertEquals(SAMPLE_JPEG, doc.getProperty("dublincore", "title"));
-        Blob blob = (Blob) doc.getProperty("file", "content");
+        assertEquals(SAMPLE_JPEG, doc.getProperty(DUBLIN_CORE, TITLE));
+        Blob blob = (Blob) doc.getProperty(FILE, CONTENT);
         assertNotNull(blob);
         assertEquals(SAMPLE_JPEG, blob.getFilename());
     }
@@ -86,27 +87,24 @@ public class TestVisualImporter {
     @Test
     public void shouldImportDuplicatedVisualAndRenameDocument() throws IOException {
         File file = getTestFile(SAMPLE_JPEG);
-        Blob input = Blobs.createBlob(file, "application/jpeg");
-
+        Blob input = Blobs.createBlob(file, MIME_TYPE);
         FileImporterContext context = FileImporterContext.builder(session, input, workspace.getPathAsString())
                 .overwrite(true)
                 .fileName(SAMPLE_JPEG)
                 .build();
         DocumentModel doc = fileManager.createOrUpdateDocument(context);
         session.save();
-
         assertNotNull(doc);
-        assertEquals(SAMPLE_JPEG, doc.getProperty("dublincore", "title"));
-        Blob blob = (Blob) doc.getProperty("file", "content");
+        assertEquals(SAMPLE_JPEG, doc.getProperty(DUBLIN_CORE, TITLE));
+        Blob blob = (Blob) doc.getProperty(FILE, CONTENT);
         assertNotNull(blob);
         assertEquals(SAMPLE_JPEG, blob.getFilename());
 
         // create again with same file
         DocumentModel duplicatedDocument = fileManager.createOrUpdateDocument(context);
         assertNotNull(duplicatedDocument);
-
-        assertEquals("sample_COPY.jpeg", duplicatedDocument.getProperty("dublincore", "title"));
-        Blob duplicatedBlob = (Blob) duplicatedDocument.getProperty("file", "content");
+        assertEquals(NEW_TITLE, duplicatedDocument.getProperty(DUBLIN_CORE, TITLE));
+        Blob duplicatedBlob = (Blob) duplicatedDocument.getProperty(FILE, CONTENT);
         assertNotNull(duplicatedBlob);
         assertEquals(SAMPLE_JPEG, duplicatedBlob.getFilename());
     }

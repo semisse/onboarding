@@ -49,11 +49,12 @@ public class TestVisualAdapter {
         return FileUtils.getResourceFileFromContext(relativePath);
     }
     protected static final String DOCUMENT_TYPE_VISUAL = "visual";
+    protected static final String MIME_TYPE = "image/jpeg";
 
     @Test
     public void shouldCallTheVisualAdapterAndSetProperties() throws IOException {
         File file = getTestFile(SAMPLE_JPEG);
-        Blob originalBlob = Blobs.createBlob(file, "image/jpeg", null, null);
+        Blob originalBlob = Blobs.createBlob(file, MIME_TYPE, null, null);
         DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, DOCUMENT_TYPE_VISUAL);
         VisualAdapter visualAdapter = doc.getAdapter(VisualAdapter.class);
         visualAdapter.setTitle(DOCUMENT_TITLE);

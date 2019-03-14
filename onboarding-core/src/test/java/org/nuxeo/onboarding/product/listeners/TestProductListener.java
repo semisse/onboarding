@@ -50,6 +50,8 @@ public class TestProductListener {
     protected static final String DOCUMENT_TYPE_PRODUCT = "product";
     protected static final String DOCUMENT_TYPE_VISUAL = "visual";
     protected static final String READ = "Read";
+    protected final static String DC_TITLE = "dc:title";
+    protected final static String USER_GROUP = "group1";
 
     @Inject
     protected EventService s;
@@ -79,7 +81,7 @@ public class TestProductListener {
         //Create Visual
         DocumentModel visual = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, DOCUMENT_TYPE_VISUAL);
         VisualAdapter visualAdapter = visual.getAdapter(VisualAdapter.class);
-        visual.setPropertyValue("dc:title", DOCUMENT_TITLE);
+        visual.setPropertyValue(DC_TITLE, DOCUMENT_TITLE);
         visualAdapter.save();
 
         //Add visual to collection
@@ -98,7 +100,7 @@ public class TestProductListener {
         //Check permissions
         DocumentModel folder = session.getParentDocument(visualAdapter.getRef());
         ACE[] permissions = folder.getACP().getACL("soldout").getACEs();
-        Assert.assertEquals("group1", permissions[0].getUsername());
+        Assert.assertEquals(USER_GROUP, permissions[0].getUsername());
         Assert.assertEquals(READ, permissions[0].getPermission());
         Assert.assertTrue(permissions[0].isGranted());
 

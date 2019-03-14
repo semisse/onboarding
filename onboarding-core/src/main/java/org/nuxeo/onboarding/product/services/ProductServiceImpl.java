@@ -31,6 +31,7 @@ import java.util.Map;
 
 public class ProductServiceImpl extends DefaultComponent implements ProductService {
     protected static final String COUNTRY_NAME = "PT";
+    protected static final String ID_NOT_FOUND = "Could not find any ID's in the contribution file";
     private Map<String, VatValueDescriptor> countriesVat = new HashMap<>();
 
     @Override
@@ -61,7 +62,7 @@ public class ProductServiceImpl extends DefaultComponent implements ProductServi
         } else if (countriesVat.get(distributorCountry) == null) {
             return price * countriesVat.get(COUNTRY_NAME).getVatValue();
         } else {
-            throw new NuxeoException("Could not find any ID's in the contribution file");
+            throw new NuxeoException(ID_NOT_FOUND);
         }
     }
 }

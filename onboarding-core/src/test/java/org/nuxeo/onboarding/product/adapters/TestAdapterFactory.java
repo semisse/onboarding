@@ -38,13 +38,14 @@ import static org.nuxeo.onboarding.product.utils.DummyData.*;
 public class TestAdapterFactory {
     protected static final String DOCUMENT_TYPE_PRODUCT = "product";
     protected static final String DOCUMENT_TYPE_VISUAL = "visual";
+    protected static final String DOCUMENT_TYPE_FILE = "File";
 
     @Inject
     protected CoreSession session;
 
     @Test(expected = NuxeoException.class)
     public void shouldNotCallTheAdapterIfNotProductOrVisual() {
-        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, "File");
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, DOCUMENT_TYPE_FILE);
         doc.getAdapter(VisualAdapter.class);
     }
 

@@ -41,6 +41,7 @@ public class TestProductService {
     DocumentModel productDocument;
     ProductAdapter productAdapter;
     protected static final String DOCUMENT_TYPE_PRODUCT = "product";
+    protected static final String DOCUMENT_TYPE_FILE = "File";
 
     @Inject
     protected ProductService productservice;
@@ -59,7 +60,7 @@ public class TestProductService {
 
     @Test(expected = NuxeoException.class)
     public void shouldThrowExceptionWhenDocIsNotProduct() {
-        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, "File");
+        DocumentModel doc = session.createDocumentModel(WORKSPACE_ROOT, DOCUMENT_NAME_VISUAL, DOCUMENT_TYPE_FILE);
         productservice.computePrice(doc);
     }
 

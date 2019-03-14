@@ -44,6 +44,7 @@ public class TestCalculateVAT {
     protected final static Double PT_VAT = 1.23d;
     protected static final String DOCUMENT_TYPE_PRODUCT = "product";
     protected static final String DOCUMENT_TYPE_VISUAL = "visual";
+    protected final static String PRODUCT_SCHEMA_PRICE = "product_schema:price";
 
     @Inject
     protected CoreSession session;
@@ -63,7 +64,7 @@ public class TestCalculateVAT {
         automationService.run(ctx, CalculateVAT.ID);
 
         DocumentModel returnedProduct = session.getDocument(productAdapter.getDocRef());
-        Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
+        Double priceWithVat = (Double) returnedProduct.getPropertyValue(PRODUCT_SCHEMA_PRICE);
 
         Assert.assertNotNull(returnedProduct);
         Assert.assertEquals(12.3, priceWithVat, 0.1);
@@ -89,7 +90,7 @@ public class TestCalculateVAT {
         OperationContext ctx = new OperationContext(session);
         ctx.setInput(productAdapter.getDocRef());
         DocumentModel returnedProduct = (DocumentModel) automationService.run(ctx, CalculateVAT.ID);
-        Double priceWithVat = (Double) returnedProduct.getPropertyValue("product_schema:price");
+        Double priceWithVat = (Double) returnedProduct.getPropertyValue(PRODUCT_SCHEMA_PRICE);
 
         Assert.assertNotNull(returnedProduct);
         Assert.assertEquals(12.3, priceWithVat, 0.1);
@@ -118,7 +119,7 @@ public class TestCalculateVAT {
             index++;
             Double priceWithoutVat = PRICE + index;
             Double priceTestWithVat = priceWithoutVat * PT_VAT;
-            Double priceWithVat = (Double) productItem.getPropertyValue("product_schema:price");
+            Double priceWithVat = (Double) productItem.getPropertyValue(PRODUCT_SCHEMA_PRICE);
             Assert.assertNotNull(priceWithVat);
             Assert.assertEquals(priceTestWithVat, priceWithVat, 0.1);
         }

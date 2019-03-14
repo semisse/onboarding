@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductListener implements EventListener {
-
     protected final static String SOLD_OUT = " - Sold Out!";
     protected final static String WORKSPACES = "/default-domain/workspaces";
     protected final static String FOLDER = "Folder";
@@ -42,6 +41,7 @@ public class ProductListener implements EventListener {
     protected final static String ACL_NAME = "soldout";
     protected final static String GROUP1 = "group1";
     protected final static String READ = "Read";
+    protected final static String NOT_A_PRODUCT = "The document is not a Product";
 
     @Override
     public void handleEvent(Event event) {
@@ -57,7 +57,7 @@ public class ProductListener implements EventListener {
             return;
         } else if (!doc.getType().equals("product")) {
             event.markBubbleException();
-            throw new NuxeoException("The document is not a Product");
+            throw new NuxeoException(NOT_A_PRODUCT);
         } else {
             ProductAdapter productAdapter = doc.getAdapter(ProductAdapter.class);
             Boolean isAvailable = productAdapter.getAvailability();
